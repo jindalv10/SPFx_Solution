@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.17.1",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.18.2",
+    "libraryName": "aafc-quiz-web-part",
+    "libraryId": "4907d59c-1da7-42f8-9ee6-989c6a46035d",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "aafc-quiz-web-part",
+    "solutionShortDescription": "aafc-quiz-web-part description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "aafc-poll-web-part-client-side-solution",
+    "id": "4aed435e-0a33-45e9-a9ea-0fbda334fca7",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.20.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "aafc-poll-web-part description"
+      },
+      "longDescription": {
+        "default": "aafc-poll-web-part description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "aafc-poll-web-part Feature",
+        "description": "The feature that activates elements of the aafc-poll-web-part solution.",
+        "id": "30745e4b-60cf-4235-aba4-616eae47a7d9",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/aafc-poll-web-part.sppkg"
+  }
+}

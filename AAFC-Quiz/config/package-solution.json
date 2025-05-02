@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "aafc-quiz-web-part-client-side-solution",
+    "id": "4907d59c-1da7-42f8-9ee6-989c6a46035d",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "Varun Jindal",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "aafc-quiz-web-part description"
+      },
+      "longDescription": {
+        "default": "aafc-quiz-web-part description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "aafc-quiz-web-part Feature",
+        "description": "The feature that activates elements of the aafc-quiz-web-part solution.",
+        "id": "c331e3ad-eb2c-4f7c-96ea-ce4f756b1d70",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/aafc-quiz-web-part.sppkg"
+  }
+}
