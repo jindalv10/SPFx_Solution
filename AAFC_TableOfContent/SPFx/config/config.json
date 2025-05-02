@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "table-of-content-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tableOfContent/TableOfContentWebPart.js",
+          "manifest": "./src/webparts/tableOfContent/TableOfContentWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "TableOfContentWebPartStrings": "lib/webparts/tableOfContent/loc/{locale}.js"
+  }
+}

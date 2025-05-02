@@ -1,0 +1,46 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.tableOfContent {
+  a {
+    color: var(--actionLink);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--actionLink);
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: var(--actionLink);
+    }
+  }
+
+  li::marker {
+    color: var(--primaryButtonBackground);
+  }
+
+  .backItem {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: var(--menuDivider);
+    margin-bottom: 10px
+  }
+
+  // hide on medium screens and smaller
+  .hideInMobileView {
+    @include ms-screen-lg-down {
+      display: none !important;
+    }
+  }
+
+  .title {
+    min-height: auto;
+  }
+
+  .hideTitle {
+    display: none !important;
+  }
+  .navigationBar{
+    width: 400px !important
+  }
+}

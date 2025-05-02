@@ -1,0 +1,93 @@
+# This is the input file for CICD implimentation for CMS-Enrollment solution 
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+      - 'SPFx/TableOfContent/DevOps/*'
+    exclude:
+      - 'SPFx/TableOfContent/README.md'
+
+pr : none
+
+resources:
+  repositories:
+  - repository: azure-pipelines-templates
+    type: git
+    name: azure-pipelines-templates
+
+variables:
+  - group: AAFCDevOpsSecrets
+  - group: AAFCDevOpsAzureFunctionSecrets
+  - name: node_version
+    value: '18.x'
+  - name: package_manager
+    value: 'npm'
+  - name: dev_site_url
+    value: 'https://001gcdev.sharepoint.com/sites/AppCatalog'
+  - name: prod_site_url
+    value: 'https://001gc.sharepoint.com/sites/AppCatalog'
+  - name: devstage_completion_ack_recipients
+    value: 'varun.jindal@agr.gc.ca;'
+  - name: prodstage_completion_ack_recipients
+    value: 'varun.jindal@agr.gc.ca;'
+  - name: gulpfile_parent_folder
+    value: 'SPFx/TableOfContent'
+
+
+stages:
+- stage: Build
+  dependsOn: []
+  jobs:
+    - template: SharePoint/build.yml@azure-pipelines-templates
+      parameters:
+        working_directory: ${{ variables.gulpfile_parent_folder }}
+        package_manager: ${{ variables.package_manager }}
+        node_version: ${{ variables.node_version }}
+        gulp_tasks: []
+        gulp_build_extra_args: ''
+        gulp_bundle_extra_args: ''
+        gulp_package_extra_args: ''
+- stage: Test
+  dependsOn: []
+  jobs:
+    - template: SharePoint/test.yml@azure-pipelines-templates
+      parameters:
+        working_directory: ${{ variables.gulpfile_parent_folder }}
+        package_manager: ${{ variables.package_manager }}
+        node_version: ${{ variables.node_version }}
+
+- stage: Deploy_Dev
+  dependsOn:
+    - Build
+    - Test
+  jobs:
+    - template: SharePoint/deploy.yml@azure-pipelines-templates
+      parameters:
+        display_name: Deploy to development
+        target_environment: Dev
+        node_version: ${{ variables.node_version }}
+        app_Id: $(DevAppId)
+        tenant_Id: $(DevTenantId)
+        m365_app_catalog_site_url: ${{ variables.dev_site_url }}
+        m365cli_app_catalog_scope: tenant
+        m365cli_deploy_extra_arguments: ''
+        stage_outcome_recipients: ${{ variables.devstage_completion_ack_recipients }}
+- stage: Deploy_Prod
+  dependsOn:
+    - Build
+    - Test    
+    - Deploy_Dev
+  jobs:
+    - template: SharePoint/deploy.yml@azure-pipelines-templates
+      parameters:
+        display_name: Deploy to production
+        target_environment: Production
+        node_version: ${{ variables.node_version }}
+        app_Id: $(ProdAppId)
+        tenant_Id: $(ProdTenantId)
+        m365_app_catalog_site_url: ${{ variables.prod_site_url }}
+        m365cli_app_catalog_scope: tenant
+        m365cli_deploy_extra_arguments: ''
+        stage_outcome_recipients: ${{ variables.prodstage_completion_ack_recipients }}

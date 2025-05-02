@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "table-of-content-client-side-solution",
+    "id": "fee5328b-d183-459f-9b00-a06c5c7dfa57",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "tableOfContent description"
+      },
+      "longDescription": {
+        "default": "tableOfContent description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "table-of-content Feature",
+        "description": "The feature that activates elements of the table-of-content solution.",
+        "id": "93393051-e08d-4f58-a2c4-4e60c8fd2bdd",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/table-of-content.sppkg"
+  }
+}

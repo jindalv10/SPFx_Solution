@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.17.1",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.18.2",
+    "libraryName": "table-of-content",
+    "libraryId": "fee5328b-d183-459f-9b00-a06c5c7dfa57",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "tableOfContent",
+    "solutionShortDescription": "tableOfContent description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

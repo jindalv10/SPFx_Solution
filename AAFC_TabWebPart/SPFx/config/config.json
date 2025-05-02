@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "tabs-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tabs/TabsWebPart.js",
+          "manifest": "./src/webparts/tabs/TabsWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {
+    "jquery": "node_modules/jquery/dist/jquery.min.js"
+  },
+  "localizedResources": {
+    "TabsWebPartStrings": "lib/webparts/tabs/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
+  }
+}

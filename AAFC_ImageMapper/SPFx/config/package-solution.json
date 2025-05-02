@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "image-mapper-client-side-solution",
+    "id": "71aeafe6-8e0d-41ce-8623-9f35739e6d21",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "ImageMapper description"
+      },
+      "longDescription": {
+        "default": "ImageMapper description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "image-mapper Feature",
+        "description": "The feature that activates elements of the image-mapper solution.",
+        "id": "c357ad24-9866-4da5-a9f3-446e0a96b223",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/image-mapper.sppkg"
+  }
+}
