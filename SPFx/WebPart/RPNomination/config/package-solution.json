@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "rpsa-nomination-client-side-solution",
+    "id": "e4026af3-4b90-40ea-9a3e-dc5e30f6ee32",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false,
+    "webApiPermissionRequests": [
+      {
+          "resource": "Microsoft Graph",
+          "scope": "User.ReadBasic.All"
+      },
+      {
+        "resource": "Microsoft Flow Service",
+        "scope": "user_impersonation"
+      }
+    ],
+    "developer": {
+      "name": "Varun Jindal",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": ""
+    }
+  },
+  "paths": {
+    "zippedPackage": "solution/milliman-rpsa-nomination.sppkg"
+  }
+}

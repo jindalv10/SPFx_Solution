@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "docu-bot-command-set": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/docuBot/DocuBotCommandSet.js",
+          "manifest": "./src/extensions/docuBot/DocuBotCommandSet.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "DocuBotCommandSetStrings": "lib/extensions/docuBot/loc/{locale}.js"
+  }
+}

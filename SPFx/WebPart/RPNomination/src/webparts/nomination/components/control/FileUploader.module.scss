@@ -1,0 +1,71 @@
+.file_uploader {
+  font-size:14px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px dashed steelblue;
+  border-radius: 8px;
+  
+}
+
+.file_uploader__dragging {
+  background-color: lightblue;
+}
+
+.file_uploader__contents {
+  padding: 10px;
+  font-size: 16px;
+} 
+
+.file_uploader__input{
+    font-size: 14px;
+    display: none;
+    visibility: hidden;
+}
+
+.file_uploader_select
+{
+    cursor: pointer;
+    color: "[theme: themePrimary]";
+    &:hover{
+      color: "[theme: themePrimary]";
+    }
+}
+
+.msIcon{
+  cursor: pointer;
+  vertical-align: bottom;
+}
+
+.attachmentsTable {
+font-family: lucida sans unicode,lucida grande,Sans-Serif;
+font-size: 12px;
+background: #fff;
+border-collapse: collapse;
+text-align: left;
+min-width: 200px;
+
+.tr, tr {
+    border-bottom: 1px solid #ddd;
+}
+tr:nth-child(2n) td {
+    background-color: #ededed;
+}
+
+th {
+    text-align: left;
+    font-weight: 400;
+    color: #039;
+    border-bottom: 1px solid #6678b1;
+}
+
+td {
+    border-bottom: 1px solid #dedede;
+    padding: 8px 40px 5px 8px;
+}
+}
+.deliverableMessage{
+font-size: 12px;
+}

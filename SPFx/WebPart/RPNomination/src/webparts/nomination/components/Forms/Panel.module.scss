@@ -1,0 +1,357 @@
+$duration: 500ms;
+$width: 1200px;
+$contentPadding: 0 28px 20px;
+
+:export { duration: $duration }
+
+.FlyoutLink {
+    .cell {
+      background-color: "[theme:themePrimary, default:#e5e5e5]";
+      display: 'inline-block';
+    }
+  }
+  
+  @import '~office-ui-fabric-react/dist/sass/References.scss';
+  .separator
+    {
+      border-color:#004877; 
+      border-width:0.5px;
+      border-style: dashed;
+    }
+  .registrationForm {
+    .container {
+      //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+      padding: 0px;
+    }
+    
+    .title {
+      @include ms-font-xl;
+      @include ms-fontColor-white;
+    }
+  
+    .subTitle {
+      @include ms-font-l;
+      @include ms-fontColor-white;
+    }
+  
+    .description {
+      @include ms-font-l;
+      @include ms-fontColor-white;
+    }
+
+    .header {
+      font-size: $ms-font-size-42;
+      font-weight: 400;
+      color: #004877;
+    }
+
+    .heading {
+        font-size: 1.2em;
+        font-weight: 400;
+        color: #004877;
+    }   
+
+    .headingDisabledLabel
+    {
+      font-size: 1.2em;
+      font-weight: 400;
+      color: #D3D3D3;
+    }
+
+    .text-label label {
+        color: #004877;
+        display: block;
+        padding: 5px 0;
+        font-weight: 600;
+    }
+
+    .spfxReactDropzone {
+        padding: 20px;
+      }
+
+    .fontWeightIncrease{
+      font-weight: 600;
+      padding-bottom: 10px;
+    }
+   
+  }
+  
+  .headerRow {
+    @include ms-Grid-row;
+    @include ms-fontColor-white;
+    background-color: $ms-color-themeDark;
+    padding: 10px 20px;
+    margin: 0;
+  }
+  
+  .footerRow {
+    .column2 {
+      margin-bottom: 10px;
+    }
+  }
+  
+  .right {
+    float: right;
+  }
+
+  .btnRight {
+    float: right;
+    margin-left: 5vh;;
+  }
+  
+  .topBottomPadding {
+    padding: 5px 0px;
+  }
+  
+  .required label::after {
+    color: rgb(168, 0, 0);
+    padding-right: 12px;
+    content: " \*";
+  }
+  .resolutionRequired::after {
+    color: rgb(168, 0, 0);
+    padding-right: 12px;
+    content: " \*";
+  }
+  
+  .registrationInfoText {
+    font-size: 17px;
+    font-weight: 300;
+  
+    a {
+      color: rgb(0, 120, 212)
+    }
+  }
+  
+  
+  .row {
+    @include ms-Grid-row;
+    padding: 5px 5px;
+    margin: 0 auto;
+
+    .fontWeightIncrease{
+      font-weight: 600;
+      padding-bottom: 10px;
+    }
+    
+  }
+  
+  .mandatInfo{
+    font-size: 8pt;
+  }
+
+  .star{
+    color: maroon !important;
+  }
+
+  .column12 {
+    @include ms-Grid-col;
+    @include ms-lg12;
+    @include ms-xl12;
+
+    
+  }
+  .column9{
+    @include ms-Grid-col;
+    @include ms-lg9;
+    @include ms-xl9;
+  }
+  .textCenter{
+    text-align: center;
+  }
+  
+  .editTitleIcon {
+    cursor: pointer;
+    color: #004877;  
+    font-size: 15px!important;
+    padding-left: 10px;
+  }
+  .column8 {
+    @include ms-Grid-col;
+    @include ms-lg8;
+    @include ms-xl8;
+  }
+  
+  .column6 {
+    @include ms-Grid-col;
+    @include ms-lg6;
+    @include ms-xl6;
+  }
+  
+  .columnPush3 {
+    @include ms-Grid-col;
+    @include ms-lgPush3;
+    @include ms-xlPush3;
+  }
+  
+  .columnPush5 {
+    @include ms-Grid-col;
+    @include ms-lgPush5;
+    @include ms-xlPush5;
+  }
+  
+  .column5 {
+    @include ms-Grid-col;
+    @include ms-lg5;
+    @include ms-xl5;
+  }
+  
+  .column3 {
+    @include ms-Grid-col;
+    @include ms-lg3;
+    @include ms-xl3;
+  }
+  
+  .column2 {
+    @include ms-Grid-col;
+    @include ms-lg2;
+    @include ms-xl2;
+  }
+  
+  .column4 {
+    @include ms-Grid-col;
+    @include ms-lg4;
+    @include ms-xl4;
+  }
+  
+  .column1 {
+    @include ms-Grid-col;
+    @include ms-lg1;
+    @include ms-xl1;
+  }
+  
+  .footerButton{
+    padding-left: 6px;
+    display: inline-block;
+    width: 162px;
+  }
+  
+  .businessPlan {
+    .uploadContainer {
+      padding: 0px
+    }
+  
+    .noPadding {
+      padding: 0px
+    }
+  }
+  
+  .businessPlanDocs {
+    margin-top: 10px;
+    text-align: left !important;
+  }
+  
+  .completedImg {
+    //background: url('./images/completed.png');
+    margin: 0px;
+  }
+  
+  .menuIcon {
+    height: 25px;
+    background-repeat: no-repeat;
+    position: relative;
+    display: inline-block;
+    visibility: visible !important;
+    top: 8px;
+    padding-left: 4px;
+  }
+  
+  .rowEnd {
+    border-bottom: 1px solid #d3d3d3;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .fileUploadLabel {
+    padding-left: 8px;
+  }
+  
+  .fileUploadControl {
+    padding-top: 4px;
+    background-color: white;
+  }
+  .businessfilesUploadButton{
+    margin-top: 10px;
+  }
+  .fileUploadButton {
+    margin-top: 0px;
+  }
+  .fileUploadErrorlbl{
+    padding-left: 8px;
+    color: rgb(168,0,0) !important;
+  }
+  .registrationCheckBox{
+    justify-content: center;
+  }
+  
+  .checkBoxTopPadding{
+  padding-top: 6px;
+}
+.panel {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: $width;
+    background: white;
+    white-space: nowrap;
+    overflow: hidden;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.4);
+   
+    .row {
+        @include ms-Grid-row;
+        padding: 5px 5px;
+        margin: 0 auto;
+         
+      .fontWeightIncrease{
+        font-weight: 600;
+        padding-bottom: 10px;
+      }   
+    }
+        
+        
+    .column12 {
+    @include ms-Grid-col;
+    @include ms-lg12;
+    @include ms-xl12;
+      
+    }
+    .textCenter{
+    text-align: center;
+    }
+
+    
+ 
+    .right {
+        right: -$width;
+        transition: right $duration;
+        border-left: 1px solid #eaeaea;
+        right: 0px;
+        
+    }
+
+    .header {
+        position: relative;
+
+        .closeButton {
+            float: right;
+            padding: 12px 12px 0 0;
+        }
+
+        .clear {
+            clear: both;
+        }
+    }
+
+    .content {
+        padding: $contentPadding;
+
+        .text-label label {
+            color: #004877;
+            display: block;
+            padding: 5px 0;
+            font-weight: 600;
+        }
+
+       
+    }
+}

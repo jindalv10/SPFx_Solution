@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "nominations-library": {
+      "components": [
+        {
+          "entrypoint": "./lib/libraries/nominations/NominationsLibrary.js",
+          "manifest": "./src/libraries/nominations/NominationsLibrary.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "NominationsLibraryStrings": "lib/libraries/nominations/loc/{locale}.js"
+  }
+}

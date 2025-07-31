@@ -1,0 +1,9 @@
+{
+  "id": "0fae9f8d-8830-434b-95dd-c1faeb2145c1",
+  "alias": "NominationsLibrary",
+  "componentType": "Library",
+
+  // The "*" signifies that the version should be taken from the package.json
+  "version": "*",
+  "manifestVersion": 2
+}

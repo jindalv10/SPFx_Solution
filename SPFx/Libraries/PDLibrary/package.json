@@ -1,0 +1,35 @@
+{
+  "name": "pd-nomination-library",
+  "version": "0.0.1",
+  "private": false,
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "build": "gulp bundle",
+    "clean": "gulp clean",
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "@pnp/common": "^2.6.0",
+    "@pnp/logging": "^2.6.0",
+    "@pnp/odata": "^2.6.0",
+    "@pnp/sp": "^2.6.0",
+    "@types/es6-promise": "0.0.33",
+    "@types/webpack-env": "1.13.1",
+    "array-from": "^2.1.1"
+  },
+  "devDependencies": {
+    "@microsoft/rush-stack-compiler-2.9": "0.7.16",
+    "@microsoft/sp-build-web": "1.9.1-plusbeta",
+    "@microsoft/sp-module-interfaces": "1.9.1-plusbeta",
+    "@microsoft/sp-tslint-rules": "1.9.1-plusbeta",
+    "@microsoft/sp-webpart-workbench": "1.9.1-plusbeta",
+    "@types/chai": "3.4.34",
+    "@types/mocha": "2.2.38",
+    "ajv": "~5.2.2",
+    "gulp": "^3.9.1",
+    "gulp-cli": "^3.0.0"
+  }
+}

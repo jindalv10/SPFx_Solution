@@ -1,0 +1,19 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.16.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "doc-genie",
+    "libraryId": "6d842726-b599-40c8-8a4a-342a3111d8d0",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "DocGenie",
+    "solutionShortDescription": "DocGenie description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ListViewCommandSet"
+  }
+}

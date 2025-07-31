@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "pd-nomination-library-client-side-solution",
+    "id": "1a164729-c489-4179-a556-f299286d922b",
+    "version": "2.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false,
+    "webApiPermissionRequests": [
+      {
+        "resource": "MillimanBTS.Data.API",
+        "scope": "user_impersonation"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/pd-nomination-library.sppkg"
+  }
+}

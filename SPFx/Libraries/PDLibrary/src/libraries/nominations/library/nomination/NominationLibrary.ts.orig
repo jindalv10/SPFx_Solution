@@ -1,0 +1,458 @@
+import { INominationLibrary } from "./INominationLibrary";
+import { IAllNominationDetails } from "../../models/IAllNominationDetails";
+import { PnpAttachmentsRequest, PnpBatchReuqest } from "../../models/PnpBatchReuqest";
+import { IUserDetails } from "../../models/IUserDetails";
+import { AllRoles, NominationStatus, PdStatus, QCReviewStatus, QueryType } from "../../models/IConstants";
+import { IIntakeNomination } from "../../models/IIntakeNomination";
+import { INominationDetailsByLA } from "../../models/INominationDetailsByLA";
+import { Utility } from "../startup/Utility";
+import { Mapper } from "../startup/Mapper";
+import { ISpUser } from "../../models/ISpUser";
+import { INominationDetailsByQC } from "../../models/INominationDetailsByQC";
+import { INominationDetailsByLegal } from "../../models/INominationDetailsByLegal";
+import SPService from "../SPService";
+import { INominationDetailsByPTPAC } from "../../models/INominationDetailsByPTPAC";
+
+
+export default class NominationLibrary extends SPService implements INominationLibrary {
+
+    constructor(context: any) {
+        super(context);
+    }
+    private getAllRequests(nominationId: number, nominee: ISpUser, currentUser: IUserDetails): PnpBatchReuqest[] {
+        let allRequest: PnpBatchReuqest[] = [
+            {
+                type: QueryType.GETITEM,
+                list: this.Constants.SP_LIST_NAMES.MasterNominationList,
+                id: nominationId,
+                expand: "NomineeName,EPNominator,Author",
+                select: "*,NomineeName/Title,NomineeName/EMail, EPNominator/Title,EPNominator/EMail,Author/Title,Author/EMail"
+            }
+        ];
+
+        if (currentUser) {
+            if (currentUser.role == AllRoles.NOMINATOR || currentUser.role == AllRoles.LA || currentUser.role == AllRoles.QC) {
+                let laRequestObject: PnpBatchReuqest = {
+                    type: QueryType.GETITEM,
+                    list: this.Constants.SP_LIST_NAMES.LANominationList,
+                    filter: "NomintaionId eq " + nominationId,
+                    expand: "Nomintaion,Assignee",
+                    select: "*,Nomintaion/Title,Assignee/Title,Assignee/EMail"
+                };
+                allRequest.push(laRequestObject);
+
+            }
+            if (currentUser.role == AllRoles.QC) {
+                let qcRequestObject: PnpBatchReuqest = {
+                    type: QueryType.GETITEM,
+                    list: this.Constants.SP_LIST_NAMES.QCNominationList,
+                    filter: "NomintaionId eq " + nominationId,
+                    expand: "Nomintaion,Reviewer,AdditionalReviewer",
+                    select: "*,Nomintaion/Title,AdditionalReviewer/Title,AdditionalReviewer/EMail,Reviewer/Title,Reviewer/EMail"
+                };
+                allRequest.push(qcRequestObject);
+
+            }
+            if (currentUser.role == AllRoles.LEGAL || currentUser.role == AllRoles.QC) {
+                let legalRequestObject: PnpBatchReuqest = {
+                    type: QueryType.GETITEM,
+                    list: this.Constants.SP_LIST_NAMES.LegalNominationList,
+                    filter: "NomintaionId eq " + nominationId,
+                    expand: "Nomintaion,Reviewer",
+                    select: "*,Nomintaion/Title,Reviewer/Title,Reviewer/EMail"
+                };
+                allRequest.push(legalRequestObject);
+            }
+            if (currentUser.role == AllRoles.NOMINATOR || currentUser.role == AllRoles.QC || currentUser.role == AllRoles.PTPAC_CHAIR || currentUser.role == AllRoles.PTPAC_REVIEWER) {
+                let attachmentReqObject: PnpBatchReuqest = {
+                    type: QueryType.GETFILES,
+                    list: this.Constants.SP_LIST_NAMES.NominationDocumentLibraryName,
+                    docSet: Utility.getDocSetName(nominee, nominationId),
+                    folder: AllRoles.NOMINATOR
+                };
+                allRequest.push(attachmentReqObject);
+            }
+            if (currentUser.role == AllRoles.QC) {
+                let attachmentReqObject: PnpBatchReuqest = {
+                    type: QueryType.GETFILES,
+                    list: this.Constants.SP_LIST_NAMES.NominationDocumentLibraryName,
+                    docSet: Utility.getDocSetName(nominee, nominationId),
+                    folder: AllRoles.QC
+                };
+                allRequest.push(attachmentReqObject);
+            }
+
+        }
+        return allRequest;
+    }
+    public async getNominationDetails(nominationId: number, nominee: ISpUser, currentUser: IUserDetails): Promise<IAllNominationDetails> {
+        let _nominationDetails: IAllNominationDetails = {
+            intakeNomination: null, nominationDetailsByLA: null, nominationAttachments: [],
+            nominationDetailsByLegal: null, nominationDetailsByPTPAC: null, nominationDetailsByQC: null
+        };
+
+        const allRequest = this.getAllRequests(nominationId, nominee, currentUser);
+        await this.spBatchGet(allRequest).then((responses) => {
+            console.info(responses);
+            let intakeDetails, laDetails, qcDetails, legalDetails;
+            if (responses) {
+                intakeDetails = responses[0];
+                let laRequest = allRequest.filter(x => x.list === this.Constants.SP_LIST_NAMES.LANominationList);
+                let legalRequest = allRequest.filter(x => x.list === this.Constants.SP_LIST_NAMES.LegalNominationList);
+                let qcRequest = allRequest.filter(x => x.list === this.Constants.SP_LIST_NAMES.QCNominationList);
+                let filesRequest = allRequest.filter(x => x.list === this.Constants.SP_LIST_NAMES.NominationDocumentLibraryName);
+
+                if (laRequest && laRequest.length > 0) {
+                    let laData = responses[allRequest.indexOf(laRequest[0])];
+                    if (laData && laData.length > 0) {
+                        laDetails = laData[0];
+                    }
+                }
+                if (legalRequest && legalRequest.length > 0) {
+                    let legalData = responses[allRequest.indexOf(legalRequest[0])];
+                    if (legalData && legalData.length > 0) {
+                        legalDetails = legalData[0];
+                    }
+                }
+                if (qcRequest && qcRequest.length > 0) {
+                    let qcData = responses[allRequest.indexOf(qcRequest[0])];
+                    if (qcData && qcData.length > 0) {
+                        qcDetails = qcData[0];
+                    }
+                }
+                if (filesRequest && filesRequest.length > 0) {
+
+                    filesRequest.forEach(element => {
+                        let allFilesResult = responses[allRequest.indexOf(element)];
+                        if (allFilesResult) {
+                            allFilesResult.forEach(nominationFilesResult => {
+                                _nominationDetails.nominationAttachments.push(Mapper.mapAttachmentDetails(nominationFilesResult, element.folder));
+                            });
+                        }
+                    });
+
+                }
+                if (intakeDetails)
+                    _nominationDetails.intakeNomination = Mapper.mapIntakeNominationDetails(intakeDetails);
+                if (laDetails)
+                    _nominationDetails.nominationDetailsByLA = Mapper.mapLADetails(laDetails);
+                if (legalDetails)
+                    _nominationDetails.nominationDetailsByLegal = Mapper.mapLegalDetails(legalDetails);
+                if (qcDetails)
+                    _nominationDetails.nominationDetailsByQC = Mapper.mapQcDetails(qcDetails);
+
+
+            }//if response end
+
+        }).catch((e) => {
+            console.log(e);
+        });
+
+        return Promise.resolve(_nominationDetails);
+    }
+
+
+
+    private buildStatusUpdateObject(intakeDetails: IIntakeNomination, status: string): PnpBatchReuqest {
+        let intakeRequest: PnpBatchReuqest;
+        if (intakeDetails && intakeDetails.id != 0) {
+            let nominationId = intakeDetails.id;
+            let _nominationDetails =
+            {
+                NominationStatus: status
+            };
+            intakeRequest = {
+                type: nominationId == 0 ? QueryType.ADD : QueryType.UPDATE,
+                list: this.Constants.SP_LIST_NAMES.MasterNominationList,
+                data: _nominationDetails,
+                id: nominationId
+            };
+        }
+        return intakeRequest;
+    }
+    private getNominationStatus(nominationDetails: IAllNominationDetails, currentUser: IUserDetails): string {
+        let status = null;
+        if (nominationDetails.intakeNomination) {
+            let intakeDetails = nominationDetails.intakeNomination;
+            if (currentUser.role == AllRoles.NOMINATOR) {
+                status = intakeDetails.nominationStatus;
+                if (!intakeDetails.reSubmissionDate && intakeDetails.nominationStatus == NominationStatus.SubmittedByNominator) {
+                    if (intakeDetails.nomineeDesignation && intakeDetails.isStatusGrantedAfter2016)
+                        status = NominationStatus.PendingWithLocalAdmin;
+                    else
+                        status = NominationStatus.PendingWithQCAndLegal;
+                }
+                else if (intakeDetails.reSubmissionDate && intakeDetails.nominationStatus == NominationStatus.SubmittedByNominator) {
+                    if (nominationDetails.nominationDetailsByLegal)
+                        status = NominationStatus.PendingWithQCAndLegal;
+                    else
+                        status = NominationStatus.SubmittedByLegalPendingWithQc;
+                }
+            }
+            if (currentUser.role == AllRoles.LA) {
+                let localAdminDetails = nominationDetails.nominationDetailsByLA;
+                if (localAdminDetails.withdrawCompletionDate)
+                    status = NominationStatus.WithdrawnCompleted;
+                else
+                    status = NominationStatus.PendingWithQCAndLegal;
+            }
+            if (currentUser.role == AllRoles.QC) {
+                let qcDetails = nominationDetails.nominationDetailsByQC;
+                if (qcDetails.qcStatus == QCReviewStatus.RequireAdditionalDetails)
+                    status = NominationStatus.RequireAdditionalDetails;
+                else if (qcDetails.qcStatus == QCReviewStatus.Withdraw) {
+                    if (nominationDetails.nominationDetailsByLA)
+                        status = NominationStatus.WithdrawRPStatus;
+                    else
+                        status = NominationStatus.WithdrawnCompleted;
+                }
+                else if (qcDetails.qcStatus == QCReviewStatus.SubmittedByQC) {
+                    if (intakeDetails.nominationStatus == NominationStatus.SubmittedByLegalPendingWithQc) {
+                        status = NominationStatus.ApproveCompleted;
+                    }
+                    else {
+                        status = NominationStatus.SubmittedByQCPendingWithLegal;
+                    }
+                }
+            }
+            if (currentUser.role == AllRoles.LEGAL) {
+                if (intakeDetails.nominationStatus == NominationStatus.SubmittedByQCPendingWithLegal) {
+                    status = NominationStatus.ApproveCompleted;
+                }
+                else {
+                    status = NominationStatus.SubmittedByLegalPendingWithQc;
+                }
+
+            }
+
+        }
+        return status;
+
+    }
+    private buildIntakeDetailsPostObject(intakeDetails: IIntakeNomination, nominationStatus: string): PnpBatchReuqest {
+        let intakeRequest: PnpBatchReuqest;
+        if (intakeDetails) {
+            let nominationId = intakeDetails.id && intakeDetails.id != 0 ? intakeDetails.id : 0;
+            let _nominationDetails = null;
+            _nominationDetails =
+            {
+                Title: intakeDetails.title ? intakeDetails.title : intakeDetails.nominee && intakeDetails.nominee.title,
+                DraftDate: intakeDetails.draftDate,
+                IntakeNotes: intakeDetails.intakeNotes,
+                IsProductPerson: intakeDetails.isProductPerson,
+                IsStatusGrantedAfter2016: intakeDetails.isStatusGrantedAfter2016,
+                NominationStatus: nominationStatus,
+                EPNominatorId: intakeDetails.epNominators && intakeDetails.epNominators.length > 0 && {
+                    results: intakeDetails.epNominators.map((element) => { return element.id; }),
+
+                },
+                NomineeDiscipline: intakeDetails.nomineeDiscipline,
+                NomineeNameId: intakeDetails.nominee && intakeDetails.nominee.id,
+                NomineeOffice: intakeDetails.nomineeOffice,
+                NomineePractice: intakeDetails.nomineePractice,
+                PDDiscipline: intakeDetails.pdDiscipline,
+                PDStatus: intakeDetails.pdStatus,
+                PDSubcategory: intakeDetails.pdSubcategory && intakeDetails.pdSubcategory.join(';'),
+                ProficientLanguage: intakeDetails.proficientLanguage && intakeDetails.proficientLanguage.join(';'),
+                RPCertification: intakeDetails.rpCertification,
+                SubmissionDate: intakeDetails.submissionDate,
+                ReSubmissionDate: intakeDetails.reSubmissionDate
+
+            };
+            intakeRequest = {
+                type: nominationId == 0 ? QueryType.ADD : intakeDetails.nominationStatus == NominationStatus.Deleted ? QueryType.DELETE : QueryType.UPDATE,
+                list: this.Constants.SP_LIST_NAMES.MasterNominationList,
+                data: _nominationDetails,
+                id: nominationId
+            };
+        }
+        return intakeRequest;
+    }
+    private buildLocalAdminPostObject(localAdminDetails: INominationDetailsByLA, nominationId: number, nominationStatus: string): PnpBatchReuqest {
+        let laRequest: PnpBatchReuqest;
+        if (nominationStatus && localAdminDetails) {
+            let localAdminDetailsId = localAdminDetails.id && localAdminDetails.id != 0 ? localAdminDetails.id : 0;
+            let _nominationDetails =
+            {
+                Title: localAdminDetails.title,
+                AssigneeId: localAdminDetails.assignee && localAdminDetails.assignee.id,
+                IsEmployeeAgreementSigned: localAdminDetails.isEmployeeAgreementSigned,
+                IsEmployeeNumberUpdated: localAdminDetails.isEmployeeNumberUpdated,
+                ReviewNotes: localAdminDetails.reviewNotes,
+                ReviewDate: localAdminDetails.reviewDate,
+                WithdrawCompletionDate: localAdminDetails.withdrawCompletionDate,
+                EmployeeNumberReversedDate: localAdminDetails.employeeNumberReversedDate,
+                IsEmployeeNumberReversed: localAdminDetails.isEmployeeNumberReversed,
+                NomintaionId: nominationId
+
+            };
+            laRequest = {
+                type: localAdminDetailsId == 0 ? QueryType.ADD : !localAdminDetails.assignee || nominationStatus == NominationStatus.Deleted ? QueryType.DELETE : QueryType.UPDATE,
+                list: this.Constants.SP_LIST_NAMES.LANominationList,
+                data: _nominationDetails,
+                id: localAdminDetailsId
+            };
+        }
+        return laRequest;
+    }
+    private buildLegalPostObject(legalDetails: INominationDetailsByLegal, nominationId: number): PnpBatchReuqest {
+        let laRequest: PnpBatchReuqest;
+        if (legalDetails) {
+            let legalAdminDetailsId = legalDetails.id && legalDetails.id != 0 ? legalDetails.id : 0;
+            let _nominationDetails =
+            {
+                Title: legalDetails.title,
+                AssigneeId: legalDetails.reviewer && legalDetails.reviewer.id,
+                IsEmpAgreementSignedByCEO: legalDetails.isEmpAgreementSignedByCEO,
+                IsSavedOnLocalDrive: legalDetails.isSavedOnLocalDrive,
+                ReviewDate: legalDetails.reviewDate,
+                NomintaionId: nominationId
+
+            };
+            laRequest = {
+                type: legalAdminDetailsId == 0 ? QueryType.ADD : QueryType.UPDATE,
+                list: this.Constants.SP_LIST_NAMES.LegalNominationList,
+                data: _nominationDetails,
+                id: legalAdminDetailsId
+            };
+        }
+        return laRequest;
+    }
+    private buildQCPostObject(qcDetails: INominationDetailsByQC, nominationId: number): PnpBatchReuqest {
+        let qcRequest: PnpBatchReuqest;
+        if (qcDetails) {
+            let qcDetailsId = qcDetails.id && qcDetails.id != 0 ? qcDetails.id : 0;
+
+            let _nominationDetails =
+            {
+                Title: nominationId + "-" + qcDetails.qcStatus,
+                ReviewerId: qcDetails.reviewer && qcDetails.reviewer.id,
+                ReviewNotes: qcDetails.reviewNotes,
+                ReviewDate: qcDetails.reviewDate,
+                NomintaionId: nominationId,
+                QCStatus: qcDetails.qcStatus,
+                SentForMoreDetails: qcDetails.sentForMoreDetails,
+                SentToPTPACDate: qcDetails.sentToPTPACDate,
+                WithdrawnDate: qcDetails.withdrawnDate,
+                SentToScDate: qcDetails.sentToScDate,
+                DraftDate: qcDetails.draftDate,
+                // Additionaol Reviewer Date
+                ReviewerAssignmentDate: qcDetails.reviewerAssignmentDate,
+                AdditionalReviewerId: qcDetails.additionalReviewer && qcDetails.additionalReviewer.id,
+                // Status Granted
+                Granted: qcDetails.granted,
+                NominationEndDate: qcDetails.endDate,
+                NotifcationRecipient: qcDetails.notifcationRecipient
+
+            };
+            qcRequest = {
+                type: qcDetailsId == 0 ? QueryType.ADD : QueryType.UPDATE,
+                list: this.Constants.SP_LIST_NAMES.QCNominationList,
+                data: _nominationDetails,
+                id: qcDetailsId
+            };
+        }
+        return qcRequest;
+    }
+
+    private buildPTPACPostObject(ptpacReviewDetails: INominationDetailsByPTPAC, nominationId: number):PnpBatchReuqest {
+      let ptpacRequest: PnpBatchReuqest;
+      if (ptpacReviewDetails) {
+          let ptpacDetailsId = ptpacReviewDetails.id && ptpacReviewDetails.id != 0 ? ptpacReviewDetails.id : 0;
+
+          let _nominationDetails =
+          {
+              Title: nominationId + "-" + "PTAPC Details",
+              ReviewerId: ptpacReviewDetails.reviewer && ptpacReviewDetails.reviewer.id,
+              chair: ptpacReviewDetails.chair,
+              recommendation: ptpacReviewDetails.recommendation,
+              reviewDueDate: ptpacReviewDetails.reviewDueDate,
+              reviewDate: ptpacReviewDetails.reviewDate,
+              recommendationSentDate: ptpacReviewDetails.recommendationSentDate,
+              reviewerAssignmentDate: ptpacReviewDetails.reviewerAssignmentDate,
+              NomintaionId: nominationId,
+          };
+          ptpacRequest = {
+              type: ptpacDetailsId == 0 ? QueryType.ADD : QueryType.UPDATE,
+              list: this.Constants.SP_LIST_NAMES.PtpacNominationList,
+              data: _nominationDetails,
+              id: ptpacDetailsId
+          };
+      }
+     return  ptpacRequest
+    }
+
+
+    public async saveNominationDetails(nominationDetails: IAllNominationDetails, currentUser: IUserDetails): Promise<boolean> {
+        if (nominationDetails && currentUser) {
+            if (nominationDetails.intakeNomination) {
+                let nominationId = nominationDetails.intakeNomination.id ? nominationDetails.intakeNomination.id : 0;
+                let allRequest: PnpBatchReuqest[] = [];
+                let allAttachmentRequest: PnpAttachmentsRequest = null;
+                let docSetName = null;
+                let intakeRequest: PnpBatchReuqest = null;
+                let nominationStatus = this.getNominationStatus
+                (nominationDetails, currentUser);
+                if (currentUser.role == AllRoles.NOMINATOR) {
+                    docSetName = Utility.getDocSetName(nominationDetails.intakeNomination.nominee, nominationId);
+                    if (nominationId == 0) {
+                        intakeRequest = this.buildIntakeDetailsPostObject(nominationDetails.intakeNomination, nominationStatus);
+                        await this.spPost(intakeRequest).then(async (id) => {
+                            nominationId = id;
+                            docSetName = Utility.getDocSetName(nominationDetails.intakeNomination.nominee, nominationId);
+                            await this.createDocumentSet(this.Constants.SP_LIST_NAMES.NominationDocumentLibraryName, docSetName, this.Constants.SP_Content_Type.DocSetContentType, Utility.getRolesForFolder());
+                        }).catch((e) => {
+                            console.error("Cannot add nomination request");
+                            return Promise.resolve(false);
+                        });
+                    }
+                    else {
+                        if (nominationStatus == NominationStatus.Deleted)
+                            await this.deleteDocumentSet(this.Constants.SP_LIST_NAMES.NominationDocumentLibraryName, docSetName);
+                        intakeRequest = this.buildIntakeDetailsPostObject(nominationDetails.intakeNomination, nominationStatus);
+                        allRequest.push(intakeRequest);
+                    }
+                    if (nominationDetails.nominationDetailsByLA) {
+                        let laRequest = this.buildLocalAdminPostObject(nominationDetails.nominationDetailsByLA, nominationId, nominationStatus);
+                        allRequest.push(laRequest);
+                    }
+                }
+                if (nominationDetails.nominationAttachments && nominationId != 0) {
+                    docSetName = Utility.getDocSetName(nominationDetails.intakeNomination.nominee, nominationId);
+                    allAttachmentRequest = {
+                        list: this.Constants.SP_LIST_NAMES.NominationDocumentLibraryName,
+                        docSet: docSetName,
+                        attachments: nominationDetails.nominationAttachments,
+                    };
+                }
+                if (nominationDetails.nominationDetailsByLA && nominationId != 0 && currentUser.role == AllRoles.LA) {
+                    let laRequest = this.buildLocalAdminPostObject(nominationDetails.nominationDetailsByLA, nominationId, nominationStatus);
+                    intakeRequest = this.buildIntakeDetailsPostObject(nominationDetails.intakeNomination, nominationStatus);
+                    allRequest.push(laRequest);
+                    allRequest.push(intakeRequest);
+                }
+                if (nominationDetails.nominationDetailsByQC && nominationId != 0 && currentUser.role == AllRoles.QC) {
+                    let qcRequest = this.buildQCPostObject(nominationDetails.nominationDetailsByQC, nominationId);
+                    allRequest.push(qcRequest);
+                }
+                if (nominationDetails.nominationDetailsByLegal && nominationId != 0 && currentUser.role == AllRoles.LEGAL) {
+                    let laRequest = this.buildLegalPostObject(nominationDetails.nominationDetailsByLegal, nominationId);
+                    allRequest.push(laRequest);
+                }
+                if (currentUser.role != AllRoles.NOMINATOR && status) {
+                    intakeRequest = this.buildStatusUpdateObject(nominationDetails.intakeNomination, status);
+                    allRequest.push(intakeRequest);
+                }
+                if ((allRequest && allRequest.length > 0) || allAttachmentRequest) {
+                    await this.spBatchPostAll(allRequest, allAttachmentRequest).then((response) => {
+                        console.info(response);
+                    }).catch((e) => {
+                        console.log(e);
+                        return Promise.reject(false);
+                    });
+                }
+                return Promise.resolve(true);
+            }
+        }
+    }
+}

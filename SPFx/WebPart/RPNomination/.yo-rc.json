@@ -1,0 +1,12 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "version": "1.12.1",
+    "libraryName": "rpsa-nomination",
+    "libraryId": "e4026af3-4b90-40ea-9a3e-dc5e30f6ee32",
+    "environment": "spo",
+    "packageManager": "npm",
+    "isCreatingSolution": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

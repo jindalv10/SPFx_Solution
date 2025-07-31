@@ -1,0 +1,12 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "version": "1.9.1",
+    "libraryName": "pd-nomination-library",
+    "libraryId": "1a164729-c489-4179-a556-f299286d922b",
+    "environment": "spo",
+    "packageManager": "npm",
+    "isCreatingSolution": true,
+    "isDomainIsolated": false,
+    "componentType": "library"
+  }
+}
