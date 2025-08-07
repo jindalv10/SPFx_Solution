@@ -1,0 +1,10 @@
+async function waitForSavePageCoAuthIfInProgress(): Promise<void> {
+  const win = window as any;
+  if (win.SavePageCoAuth && typeof win.SavePageCoAuth.then === 'function') {
+    console.log("SavePageCoAuth in progress. Waiting...");
+    await win.SavePageCoAuth;
+    console.log("SavePageCoAuth completed.");
+  }
+}
+
+await waitForSavePageCoAuthIfInProgress();
