@@ -1,67 +1,182 @@
-// Example: SPFx React component using Fluent UI's NormalPeoplePicker
+// Lightweight SIP-filtered people search for SPFx + Fluent UI pickers
+// Usage: import { searchPeopleWithSip } from '../services/peopleSearch';
+
+import { HttpClient, HttpClientResponse } from "@microsoft/sp-http";
+import { IPersonaProps } from "@fluentui/react/lib/Persona";
+
+type SearchOptions = {
+  httpClient: HttpClient;
+  siteUrl: string;
+  minQueryLength?: number;  // default 2
+  rowLimit?: number;        // default 15
+};
+
+type PeopleSearchRow = {
+  [key: string]: string;
+};
+
+const SELECT_PROPS =
+  "PreferredName,WorkEmail,JobTitle,Department,PictureURL,SPS-SipAddress,AccountName,UserProfile_GUID";
+
+/**
+ * Calls SharePoint Search (people only), filters to entries that have a SIP address,
+ * and returns them as Fluent UI Persona items.
+ *
+ * @param filterText User input text to search by
+ * @param opts Options (httpClient, siteUrl, etc.)
+ */
+export async function searchPeopleWithSip(
+  filterText: string,
+  opts: SearchOptions
+): Promise<IPersonaProps[]> {
+  const { httpClient, siteUrl, minQueryLength = 2, rowLimit = 15 } = opts;
+
+  if (!filterText || filterText.trim().length < minQueryLength) return [];
+
+  const querytext = encodeURIComponent(`(contentclass:spspeople) (${filterText}*)`);
+  const url =
+    `${siteUrl}//_api/search/query?querytext='${querytext}'` +
+    `&selectproperties='${encodeURIComponent(SELECT_PROPS)}'` +
+    `&rowlimit=${rowLimit}`;
+
+  const res: HttpClientResponse = await httpClient.get(url, HttpClient.configurations.v1);
+  if (!res.ok) {
+    // Fail soft: return empty rather than throwing in picker UX
+    return [];
+  }
+
+  const json = await res.json();
+  const rows: any[] = json?.PrimaryQueryResult?.RelevantResults?.Table?.Rows ?? [];
+
+  const personas: IPersonaProps[] = rows
+    .map((r: any) => {
+      const cells: PeopleSearchRow = {};
+      r?.Cells?.forEach((c: any) => (cells[c.Key] = c.Value));
+
+      // Filter: require SIP
+      if (!cells["SPS-SipAddress"]) return null;
+
+      const name = cells["PreferredName"];
+      const job = cells["JobTitle"];
+      const dept = cells["Department"];
+      const email = cells["WorkEmail"];
+      const pic = cells["PictureURL"];
+      const upn = cells["AccountName"];
+
+      const secondary = job || dept || "";
+      const tertiary = email || "";
+
+      const persona: IPersonaProps = {
+        text: name || upn || email || "(Unknown)",
+        secondaryText: secondary,
+        tertiaryText: tertiary,
+        imageUrl: pic,
+        id: upn, // safe unique-ish identifier
+        // Stash extra data for later use (e.g., validating onChange)
+        data: {
+          sip: cells["SPS-SipAddress"],
+          email,
+          upn,
+          profileId: cells["UserProfile_GUID"],
+        },
+      };
+      return persona;
+    })
+    .filter(Boolean) as IPersonaProps[];
+
+  return personas;
+}
+
+/**
+ * Simple debounce (no external deps).
+ * Returns a debounced function that resolves the last call's promise.
+ */
+export function debouncePromise<TArgs extends any[], TRes>(
+  fn: (...args: TArgs) => Promise<TRes>,
+  waitMs: number
+): (...args: TArgs) => Promise<TRes> {
+  let timer: number | undefined;
+  let pending: { resolve: (v: TRes) => void; reject: (e: any) => void } | null = null;
+
+  return (...args: TArgs) =>
+    new Promise<TRes>((resolve, reject) => {
+      if (timer) {
+        // @ts-ignore
+        clearTimeout(timer);
+        timer = undefined;
+      }
+      pending = { resolve, reject };
+      // @ts-ignore
+      timer = setTimeout(async () => {
+        try {
+          const res = await fn(...args);
+          pending?.resolve(res);
+        } catch (e) {
+          pending?.reject(e);
+        } finally {
+          pending = null;
+          // @ts-ignore
+          clearTimeout(timer);
+          timer = undefined;
+        }
+      }, waitMs);
+    });
+}
+
 import * as React from "react";
 import { NormalPeoplePicker, IBasePickerSuggestionsProps } from "@fluentui/react/lib/Pickers";
 import { IPersonaProps } from "@fluentui/react/lib/Persona";
-import { HttpClient, HttpClientResponse } from "@microsoft/sp-http";
+import { HttpClient } from "@microsoft/sp-http";
+import { searchPeopleWithSip, debouncePromise } from "../services/peopleSearch";
 
 const suggestionProps: IBasePickerSuggestionsProps = {
   suggestionsHeaderText: "People",
   noResultsFoundText: "No matches",
 };
 
-type Props = { httpClient: HttpClient; siteUrl: string };
+type Props = {
+  httpClient: HttpClient;
+  siteUrl: string;
+  minQueryLength?: number;
+  rowLimit?: number;
+};
 
-export default function SipFilteredPeoplePicker({ httpClient, siteUrl }: Props) {
-  const onResolveSuggestions = React.useCallback(async (filterText: string): Promise<IPersonaProps[]> => {
-    if (!filterText || filterText.length < 2) return [];
+export default function SipFilteredPeoplePicker({
+  httpClient,
+  siteUrl,
+  minQueryLength = 2,
+  rowLimit = 15,
+}: Props) {
+  // Debounce the search to avoid chatty calls
+  const debouncedSearch = React.useMemo(
+    () =>
+      debouncePromise(
+        (text: string) =>
+          searchPeopleWithSip(text, {
+            httpClient,
+            siteUrl,
+            minQueryLength,
+            rowLimit,
+          }),
+        350 // ms
+      ),
+    [httpClient, siteUrl, minQueryLength, rowLimit]
+  );
 
-    // SharePoint Search: people only, include SIP in select props
-    const selectProps =
-      "PreferredName,WorkEmail,JobTitle,Department,PictureURL,SPS-SipAddress,AccountName,UserProfile_GUID";
-    const querytext = encodeURIComponent(`(contentclass:spspeople) (${filterText}*)`);
-    const url =
-      `${siteUrl}/_api/search/query?querytext='${querytext}'` +
-      `&selectproperties='${encodeURIComponent(selectProps)}'` +
-      `&rowlimit=15`;
-
-    const res: HttpClientResponse = await httpClient.get(url, HttpClient.configurations.v1);
-    const json = await res.json();
-
-    const rows = json?.PrimaryQueryResult?.RelevantResults?.Table?.Rows ?? [];
-    const personas: IPersonaProps[] = rows
-      .map((r: any) => {
-        const cells: Record<string, string> = {};
-        r.Cells?.forEach((c: any) => (cells[c.Key] = c.Value));
-        // Filter: only keep entries that have a SIP address
-        if (!cells["SPS-SipAddress"]) return null;
-
-        return {
-          // Persona fields
-          text: cells["PreferredName"],
-          secondaryText: cells["JobTitle"] || cells["Department"],
-          tertiaryText: cells["WorkEmail"],
-          imageUrl: cells["PictureURL"],
-          // You can stash SIP and other fields in 'id' or 'data'
-          id: cells["AccountName"],
-          data: {
-            sip: cells["SPS-SipAddress"],
-            email: cells["WorkEmail"],
-            upn: cells["AccountName"],
-            profileId: cells["UserProfile_GUID"],
-          },
-        } as IPersonaProps;
-      })
-      .filter(Boolean);
-
-    return personas;
-  }, [httpClient, siteUrl]);
+  const onResolveSuggestions = React.useCallback(
+    (filterText: string): Promise<IPersonaProps[]> => {
+      return debouncedSearch(filterText);
+    },
+    [debouncedSearch]
+  );
 
   return (
     <NormalPeoplePicker
       onResolveSuggestions={onResolveSuggestions}
       pickerSuggestionsProps={suggestionProps}
       onEmptyResolveSuggestions={() => []}
-      inputProps={{ "aria-label": "Find a person" }}
+      inputProps={{ "aria-label": "Find a person (SIP-enabled)" }}
     />
   );
 }
+
