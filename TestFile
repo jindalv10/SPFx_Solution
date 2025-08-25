@@ -1,10 +1,67 @@
-async function waitForSavePageCoAuthIfInProgress(): Promise<void> {
-  const win = window as any;
-  if (win.SavePageCoAuth && typeof win.SavePageCoAuth.then === 'function') {
-    console.log("SavePageCoAuth in progress. Waiting...");
-    await win.SavePageCoAuth;
-    console.log("SavePageCoAuth completed.");
-  }
-}
+// Example: SPFx React component using Fluent UI's NormalPeoplePicker
+import * as React from "react";
+import { NormalPeoplePicker, IBasePickerSuggestionsProps } from "@fluentui/react/lib/Pickers";
+import { IPersonaProps } from "@fluentui/react/lib/Persona";
+import { HttpClient, HttpClientResponse } from "@microsoft/sp-http";
 
-await waitForSavePageCoAuthIfInProgress();
+const suggestionProps: IBasePickerSuggestionsProps = {
+  suggestionsHeaderText: "People",
+  noResultsFoundText: "No matches",
+};
+
+type Props = { httpClient: HttpClient; siteUrl: string };
+
+export default function SipFilteredPeoplePicker({ httpClient, siteUrl }: Props) {
+  const onResolveSuggestions = React.useCallback(async (filterText: string): Promise<IPersonaProps[]> => {
+    if (!filterText || filterText.length < 2) return [];
+
+    // SharePoint Search: people only, include SIP in select props
+    const selectProps =
+      "PreferredName,WorkEmail,JobTitle,Department,PictureURL,SPS-SipAddress,AccountName,UserProfile_GUID";
+    const querytext = encodeURIComponent(`(contentclass:spspeople) (${filterText}*)`);
+    const url =
+      `${siteUrl}/_api/search/query?querytext='${querytext}'` +
+      `&selectproperties='${encodeURIComponent(selectProps)}'` +
+      `&rowlimit=15`;
+
+    const res: HttpClientResponse = await httpClient.get(url, HttpClient.configurations.v1);
+    const json = await res.json();
+
+    const rows = json?.PrimaryQueryResult?.RelevantResults?.Table?.Rows ?? [];
+    const personas: IPersonaProps[] = rows
+      .map((r: any) => {
+        const cells: Record<string, string> = {};
+        r.Cells?.forEach((c: any) => (cells[c.Key] = c.Value));
+        // Filter: only keep entries that have a SIP address
+        if (!cells["SPS-SipAddress"]) return null;
+
+        return {
+          // Persona fields
+          text: cells["PreferredName"],
+          secondaryText: cells["JobTitle"] || cells["Department"],
+          tertiaryText: cells["WorkEmail"],
+          imageUrl: cells["PictureURL"],
+          // You can stash SIP and other fields in 'id' or 'data'
+          id: cells["AccountName"],
+          data: {
+            sip: cells["SPS-SipAddress"],
+            email: cells["WorkEmail"],
+            upn: cells["AccountName"],
+            profileId: cells["UserProfile_GUID"],
+          },
+        } as IPersonaProps;
+      })
+      .filter(Boolean);
+
+    return personas;
+  }, [httpClient, siteUrl]);
+
+  return (
+    <NormalPeoplePicker
+      onResolveSuggestions={onResolveSuggestions}
+      pickerSuggestionsProps={suggestionProps}
+      onEmptyResolveSuggestions={() => []}
+      inputProps={{ "aria-label": "Find a person" }}
+    />
+  );
+}
