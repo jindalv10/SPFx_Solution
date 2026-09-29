@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "2.0.0",
+  "solution": "Site Migration Tracker",
+  "notes": "Generic schema. Department-specific values (department code, business group, mailboxes) are set as tokens in configSeed and replaced by the script parameters.",
+  "lists": [
+    {
+      "name": "SiteRegister",
+      "title": "Site Register",
+      "description": "One row per site. Src_ columns are written only by the daily import; all other columns are owned by the department team or system flows.",
+      "onQuickLaunch": true,
+      "titleDisplayName": "Reference No",
+      "fields": [
+        { "name": "SiteKey", "display": "Site Key", "type": "Text", "maxLength": 255, "indexed": true, "unique": true, "required": true, "inDefaultView": true, "description": "Normalized URL path from /sites/ onwards: decoded and lowercase. Match key to the source workbook." },
+
+        { "name": "Src_SiteURL", "display": "Source Site URL", "type": "Note", "inDefaultView": true, "description": "Full URL as it appears in the source workbook." },
+        { "name": "Src_SiteTitle", "display": "Source Site Title", "type": "Text" },
+        { "name": "Src_SiteCollection", "display": "Source Collection", "type": "Text", "indexed": true, "inDefaultView": true },
+        { "name": "Src_TopLevelURL", "display": "Source Top-Level URL", "type": "Text", "indexed": true },
+        { "name": "Src_BusinessGroup", "display": "Source Business Group", "type": "Text", "indexed": true },
+        { "name": "Src_InfoSteward1", "display": "Source Info Steward 1", "type": "Text" },
+        { "name": "Src_InfoSteward2", "display": "Source Info Steward 2", "type": "Text" },
+        { "name": "Src_SiteOwner", "display": "Source Site Owner", "type": "Text" },
+        { "name": "Src_SizeGB", "display": "Source Size (GB)", "type": "Number", "decimals": 2, "inDefaultView": true },
+        { "name": "Src_Created", "display": "Source Created", "type": "DateTime", "format": "DateOnly" },
+        { "name": "Src_LastModified", "display": "Source Last Modified", "type": "DateTime", "format": "DateOnly", "inDefaultView": true },
+        { "name": "Src_LastAccessed", "display": "Source Last Accessed", "type": "DateTime", "format": "DateOnly" },
+        { "name": "Src_Action", "display": "Source Action", "type": "Text", "indexed": true },
+        { "name": "Src_MigrationStatus", "display": "Source Migration Status", "type": "Text" },
+
+        { "name": "InfoSteward1", "display": "Info Steward 1", "type": "User", "inDefaultView": true, "description": "Confirmed steward of record (department value)." },
+        { "name": "InfoSteward2", "display": "Info Steward 2", "type": "User" },
+        { "name": "OwnershipStatus", "display": "Ownership Status", "type": "Choice", "indexed": true, "default": "Investigating",
+          "choices": ["Confirmed", "Other business group", "Mixed", "Orphan - no steward", "Orphan - no owner", "Orphan - both", "Investigating"] },
+        { "name": "Decision", "display": "Decision", "type": "Choice", "indexed": true, "default": "Undecided", "inDefaultView": true,
+          "choices": ["Undecided", "Keep", "Delete", "Hold - PII", "Not my site"] },
+        { "name": "Stage", "display": "Stage", "type": "Choice", "indexed": true, "default": "Triage", "inDefaultView": true,
+          "choices": ["Triage", "Ownership confirmation", "Awaiting steward decision", "Decision confirmed", "Sent to enterprise", "Confirmed in master", "Re-review", "Closed"] },
+        { "name": "PIIStatus", "display": "PII Status", "type": "Choice", "default": "Unknown",
+          "choices": ["Unknown", "Attested no PII", "Attested PII"] },
+        { "name": "ReReviewReason", "display": "Re-review Reason", "type": "Text" },
+        { "name": "AssignedTo", "display": "Assigned To", "type": "User" },
+        { "name": "Notes", "display": "Notes", "type": "Note", "appendOnly": true },
+
+        { "name": "InSource", "display": "In Source", "type": "Boolean", "default": "1", "indexed": true },
+        { "name": "LastSeenInImport", "display": "Last Seen In Import", "type": "DateTime", "format": "DateTime" },
+        { "name": "SrcHash", "display": "Source Hash", "type": "Text", "description": "Concatenated Src_ values used to detect changes between imports." },
+        { "name": "DriftFlag", "display": "Drift Flag", "type": "Boolean", "default": "0", "indexed": true },
+        { "name": "DriftReason", "display": "Drift Reason", "type": "Note" },
+        { "name": "OpenUpdateCount", "display": "Open Update Requests", "type": "Number", "decimals": 0, "default": "0" },
+        { "name": "LastContacted", "display": "Last Contacted", "type": "DateTime", "format": "DateTime" },
+        { "name": "ResponseCount", "display": "Response Count", "type": "Number", "decimals": 0, "default": "0" }
+      ],
+      "views": [
+        { "title": "By stage", "fields": ["LinkTitle", "SiteKey", "Src_SiteCollection", "Decision", "InfoSteward1", "Src_LastModified"],
+          "query": "<GroupBy Collapse='TRUE' GroupLimit='100'><FieldRef Name='Stage'/></GroupBy><OrderBy><FieldRef Name='Title'/></OrderBy>" },
+        { "title": "Awaiting steward", "fields": ["LinkTitle", "SiteKey", "InfoSteward1", "InfoSteward2", "LastContacted", "ResponseCount"],
+          "query": "<Where><Eq><FieldRef Name='Stage'/><Value Type='Choice'>Awaiting steward decision</Value></Eq></Where><OrderBy><FieldRef Name='LastContacted'/></OrderBy>" },
+        { "title": "Delete requested", "fields": ["LinkTitle", "SiteKey", "InfoSteward1", "InfoSteward2", "Src_Action", "Modified"],
+          "query": "<Where><And><Eq><FieldRef Name='Stage'/><Value Type='Choice'>Sent to enterprise</Value></Eq><Eq><FieldRef Name='Decision'/><Value Type='Choice'>Delete</Value></Eq></And></Where>" },
+        { "title": "Drift", "fields": ["LinkTitle", "SiteKey", "DriftReason", "OpenUpdateCount", "Modified"],
+          "query": "<Where><Eq><FieldRef Name='DriftFlag'/><Value Type='Boolean'>1</Value></Eq></Where>" },
+        { "title": "Missing from source", "fields": ["LinkTitle", "SiteKey", "LastSeenInImport", "Stage", "Decision"],
+          "query": "<Where><Eq><FieldRef Name='InSource'/><Value Type='Boolean'>0</Value></Eq></Where>" },
+        { "title": "Orphans", "fields": ["LinkTitle", "SiteKey", "OwnershipStatus", "Src_InfoSteward1", "Src_SiteOwner", "Src_SiteCollection"],
+          "query": "<Where><BeginsWith><FieldRef Name='OwnershipStatus'/><Value Type='Choice'>Orphan</Value></BeginsWith></Where>" },
+        { "title": "PII holds", "fields": ["LinkTitle", "SiteKey", "PIIStatus", "InfoSteward1", "Src_SizeGB"],
+          "query": "<Where><Eq><FieldRef Name='Decision'/><Value Type='Choice'>Hold - PII</Value></Eq></Where>" }
+      ]
+    },
+
+    {
+      "name": "UpdateQueue",
+      "title": "Update Queue",
+      "description": "Every change requested from the enterprise (Emma's) team, tracked until the source workbook matches.",
+      "onQuickLaunch": true,
+      "titleDisplayName": "Request ID",
+      "fields": [
+        { "name": "SiteRefNo", "display": "Site Reference No", "type": "Text", "indexed": true, "inDefaultView": true, "description": "Reference No from Site Register (text, not lookup, so the list is portable across sites)." },
+        { "name": "SiteKey", "display": "Site Key", "type": "Text", "maxLength": 255, "inDefaultView": true },
+        { "name": "RequestType", "display": "Request Type", "type": "Choice", "default": "Field update", "inDefaultView": true,
+          "choices": ["Field update", "Keep", "Delete", "Hold - PII"] },
+        { "name": "FieldName", "display": "Field", "type": "Text", "inDefaultView": true },
+        { "name": "SourceValue", "display": "Current Source Value", "type": "Note", "inDefaultView": true },
+        { "name": "RequestedValue", "display": "Requested Value", "type": "Note", "inDefaultView": true },
+        { "name": "Reason", "display": "Reason", "type": "Note" },
+        { "name": "Status", "display": "Status", "type": "Choice", "indexed": true, "default": "Open", "inDefaultView": true,
+          "choices": ["Open", "Applied", "Reverted", "Withdrawn"] },
+        { "name": "FirstSent", "display": "First Sent", "type": "DateTime", "format": "DateTime" },
+        { "name": "LastSent", "display": "Last Sent", "type": "DateTime", "format": "DateTime" },
+        { "name": "TimesSent", "display": "Times Sent", "type": "Number", "decimals": 0, "default": "0" },
+        { "name": "AppliedDate", "display": "Applied Date", "type": "DateTime", "format": "DateTime" },
+        { "name": "RaisedBy", "display": "Raised By", "type": "User" }
+      ],
+      "views": [
+        { "title": "Open requests", "fields": ["LinkTitle", "SiteRefNo", "SiteKey", "RequestType", "FieldName", "RequestedValue", "FirstSent", "TimesSent"],
+          "query": "<Where><Eq><FieldRef Name='Status'/><Value Type='Choice'>Open</Value></Eq></Where><OrderBy><FieldRef Name='FirstSent'/></OrderBy>" },
+        { "title": "Reverted", "fields": ["LinkTitle", "SiteRefNo", "SiteKey", "FieldName", "RequestedValue", "SourceValue", "Modified"],
+          "query": "<Where><Eq><FieldRef Name='Status'/><Value Type='Choice'>Reverted</Value></Eq></Where>" }
+      ]
+    },
+
+    {
+      "name": "OutreachBatches",
+      "title": "Outreach Batches",
+      "description": "Each steward outreach started by the team from the outreach app.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Batch ID",
+      "fields": [
+        { "name": "MessageType", "display": "Message Type", "type": "Text", "indexed": true, "inDefaultView": true, "description": "Key of a Message type row in the Configuration list." },
+        { "name": "SiteRefNos", "display": "Site Reference Nos", "type": "Note" },
+        { "name": "SiteCount", "display": "Sites", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "StewardCount", "display": "Stewards", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "SentBy", "display": "Sent By", "type": "User", "inDefaultView": true },
+        { "name": "SentDate", "display": "Sent Date", "type": "DateTime", "format": "DateTime", "indexed": true, "inDefaultView": true },
+        { "name": "BatchStatus", "display": "Batch Status", "type": "Choice", "default": "Draft", "inDefaultView": true,
+          "choices": ["Draft", "Sent", "Partially responded", "Complete", "Cancelled"] }
+      ],
+      "views": []
+    },
+
+    {
+      "name": "AuditLog",
+      "title": "Audit Log",
+      "description": "Every card or email sent, every steward response and every email to the enterprise team: who, what, when.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Event ID",
+      "fields": [
+        { "name": "EventType", "display": "Event Type", "type": "Choice", "indexed": true, "inDefaultView": true,
+          "choices": ["Card sent", "Email sent", "Response received", "Evidence email sent", "Batch email sent", "Status change", "Import run"] },
+        { "name": "SiteRefNo", "display": "Site Reference No", "type": "Text", "indexed": true, "inDefaultView": true },
+        { "name": "BatchId", "display": "Batch ID", "type": "Text", "indexed": true },
+        { "name": "Actor", "display": "Actor (email)", "type": "Text", "inDefaultView": true },
+        { "name": "ActorIsStewardOfRecord", "display": "Actor Is Steward Of Record", "type": "Boolean", "default": "0" },
+        { "name": "Details", "display": "Details", "type": "Note", "inDefaultView": true },
+        { "name": "EventDate", "display": "Event Date", "type": "DateTime", "format": "DateTime", "indexed": true, "inDefaultView": true }
+      ],
+      "views": [
+        { "title": "Steward responses", "fields": ["LinkTitle", "SiteRefNo", "Actor", "ActorIsStewardOfRecord", "Details", "EventDate"],
+          "query": "<Where><Eq><FieldRef Name='EventType'/><Value Type='Choice'>Response received</Value></Eq></Where><OrderBy><FieldRef Name='EventDate' Ascending='FALSE'/></OrderBy>" }
+      ]
+    },
+
+    {
+      "name": "ImportLog",
+      "title": "Import Log",
+      "description": "One row per daily import run.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Run ID",
+      "fields": [
+        { "name": "RunStart", "display": "Run Start", "type": "DateTime", "format": "DateTime", "indexed": true, "inDefaultView": true },
+        { "name": "RunEnd", "display": "Run End", "type": "DateTime", "format": "DateTime", "inDefaultView": true },
+        { "name": "RowsRead", "display": "Rows Read", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "RowsAdded", "display": "Added", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "RowsUpdated", "display": "Updated", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "RowsMissing", "display": "Missing From Source", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "DriftRaised", "display": "Drift Raised", "type": "Number", "decimals": 0, "inDefaultView": true },
+        { "name": "RunStatus", "display": "Run Status", "type": "Choice", "indexed": true, "inDefaultView": true,
+          "choices": ["Succeeded", "Partial", "Failed"] },
+        { "name": "ErrorDetail", "display": "Error Detail", "type": "Note" }
+      ],
+      "views": []
+    },
+
+    {
+      "name": "Configuration",
+      "title": "Configuration",
+      "description": "Business settings the team can change without redeploying: intervals, recipients, message types, links.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Key",
+      "fields": [
+        { "name": "ConfigValue", "display": "Value", "type": "Note", "inDefaultView": true },
+        { "name": "Category", "display": "Category", "type": "Choice", "indexed": true, "default": "General", "inDefaultView": true,
+          "choices": ["General", "Email", "Message type", "Links"] },
+        { "name": "ConfigDescription", "display": "Description", "type": "Note", "inDefaultView": true },
+        { "name": "IsActive", "display": "Active", "type": "Boolean", "default": "1", "inDefaultView": true }
+      ],
+      "views": []
+    }
+  ],
+
+  "configSeed": [
+    { "key": "DeptCode", "value": "{DeptCode}", "category": "General", "description": "Prefix for reference numbers, e.g. CA-000001." },
+    { "key": "BusinessGroupFilter", "value": "{BusinessGroup}", "category": "General", "description": "Business group value used to select rows from the source workbook." },
+    { "key": "RefNoPadding", "value": "6", "category": "General", "description": "Digits in the reference number." },
+    { "key": "EnterpriseBatchIntervalDays", "value": "1", "category": "Email", "description": "How often open update requests are emailed to the enterprise team (1, 3 or 5)." },
+    { "key": "EnterpriseTeamEmail", "value": "{EnterpriseTeamEmail}", "category": "Email", "description": "Recipient(s) for update batches and delete evidence emails." },
+    { "key": "SharedMailbox", "value": "{SharedMailbox}", "category": "Email", "description": "Mailbox all emails are sent from." },
+    { "key": "SupportTeamEmail", "value": "{SupportTeamEmail}", "category": "Email", "description": "Team address copied on evidence emails." },
+    { "key": "MaxSitesPerCard", "value": "15", "category": "General", "description": "Maximum sites listed on one steward adaptive card." },
+    { "key": "MSG_KeepOrDelete", "value": "Please confirm whether each site below should be kept (queued for migration) or deleted.", "category": "Message type", "description": "Standard keep/delete decision request." },
+    { "key": "MSG_Orphan", "value": "Our records show these sites have no confirmed information steward. Please confirm whether you are the steward, or tell us who is.", "category": "Message type", "description": "Orphan site ownership request." },
+    { "key": "MSG_ReReviewDeletion", "value": "These sites were marked for deletion but show recent activity. Please confirm whether they should still be deleted.", "category": "Message type", "description": "Re-review of a deletion after activity was detected." },
+    { "key": "MSG_WrongBusinessGroup", "value": "These sites are recorded under a business group that may be incorrect. Please confirm who owns them.", "category": "Message type", "description": "Business group mismatch." }
+  ]
+}
