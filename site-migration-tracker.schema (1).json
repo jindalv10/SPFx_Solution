@@ -1,0 +1,990 @@
+{
+  "schemaVersion": "2.3.0",
+  "solution": "Site Migration Tracker",
+  "notes": "Generic schema. Department-specific values (department code, business group, mailboxes) are set as tokens in configSeed and replaced by the script parameters.",
+  "lists": [
+    {
+      "name": "SiteRegister",
+      "title": "Site Register",
+      "description": "One row per site. Src_ columns are written only by the daily import; all other columns are owned by the department team or system flows.",
+      "onQuickLaunch": true,
+      "titleDisplayName": "Reference No",
+      "fields": [
+        {
+          "name": "SiteKey",
+          "display": "Site Key",
+          "type": "Text",
+          "maxLength": 255,
+          "indexed": true,
+          "unique": true,
+          "required": true,
+          "inDefaultView": true,
+          "description": "Normalized URL path from /sites/ onwards: decoded and lowercase. Match key to the source workbook."
+        },
+        {
+          "name": "Src_SiteURL",
+          "display": "Source Site URL",
+          "type": "Note",
+          "source": "URL",
+          "inDefaultView": true,
+          "description": "Full URL as in the source workbook."
+        },
+        {
+          "name": "Src_SiteTitle",
+          "display": "Source Site Name",
+          "type": "Text",
+          "source": "Name",
+          "inDefaultView": true
+        },
+        {
+          "name": "Src_TopLevelURL",
+          "display": "Source Multi-Level Root",
+          "type": "Text",
+          "source": "MULTI LEVEL ROOT",
+          "indexed": true,
+          "description": "Top-level site of the hierarchy."
+        },
+        {
+          "name": "Src_MLROPercent",
+          "display": "Source MLRO %",
+          "type": "Number",
+          "source": "MLRO %",
+          "decimals": 2,
+          "description": "Stored as a number, e.g. 100.00% -> 100."
+        },
+        {
+          "name": "Src_SizeMB",
+          "display": "Source Size (MB)",
+          "type": "Number",
+          "decimals": 2,
+          "source": "SIZE",
+          "inDefaultView": true,
+          "description": "This site only - excludes subsites. Megabytes."
+        },
+        {
+          "name": "Src_ActualSizeMB",
+          "display": "Source Actual Size (MB)",
+          "type": "Number",
+          "decimals": 2,
+          "source": "ACTUAL SIZE",
+          "description": "This site only - excludes subsites. Megabytes."
+        },
+        {
+          "name": "Src_SiteSteward",
+          "display": "Source Site Steward (Record Stewards)",
+          "type": "Text",
+          "source": "OWNER (Record Stewards)"
+        },
+        {
+          "name": "Src_InfoSteward1",
+          "display": "Source Info Steward (Primary)",
+          "type": "Text",
+          "source": "Info Steward (Primary)",
+          "indexed": true
+        },
+        {
+          "name": "Src_InfoSteward2",
+          "display": "Source Info Steward (Secondary)",
+          "type": "Text",
+          "source": "Info Steward (Secondary)"
+        },
+        {
+          "name": "Src_MigrationAction",
+          "display": "Source Migration Action",
+          "type": "Text",
+          "source": "ACTION",
+          "indexed": true,
+          "inDefaultView": true
+        },
+        {
+          "name": "Src_DeleteEmailSentDate",
+          "display": "Source Delete Email Sent Date",
+          "type": "DateTime",
+          "source": "DELETE EMAIL SENT DATE",
+          "format": "DateOnly"
+        },
+        {
+          "name": "Src_DeleteConfirm",
+          "display": "Source Delete Confirm",
+          "type": "Text",
+          "source": "DELETE CONFIRM"
+        },
+        {
+          "name": "Src_DeletedBy",
+          "display": "Source Deleted By",
+          "type": "Text",
+          "source": "DELETED BY"
+        },
+        {
+          "name": "Src_DeletionDate",
+          "display": "Source Deletion Date",
+          "type": "DateTime",
+          "source": "DELETION DATE",
+          "format": "DateOnly"
+        },
+        {
+          "name": "Src_APIngestionCompleted",
+          "display": "Source AvePoint Ingestion Completed",
+          "type": "Text",
+          "source": "INGESTION - COMPLETED"
+        },
+        {
+          "name": "Src_InAvePoint",
+          "display": "Source In AvePoint",
+          "type": "Text",
+          "source": "IN AVEPOINT"
+        },
+        {
+          "name": "Src_APTargetURL",
+          "display": "Source AvePoint Target URL",
+          "type": "Note",
+          "source": "AP TARGET",
+          "description": "AvePoint target (URL or value such as Archive). Multi-line text so long URLs fit."
+        },
+        {
+          "name": "Src_AgilePlaceLink",
+          "display": "Source AgilePlace Link",
+          "type": "URL",
+          "source": "AGILEPLACE LINK",
+          "description": "Emma's card for this site. A new link is evidence she has queued our request."
+        },
+        {
+          "name": "Src_MigrationCompletionDate",
+          "display": "Source Migration Completion Date",
+          "type": "DateTime",
+          "source": "COMPLETION DATE",
+          "format": "DateOnly"
+        },
+        {
+          "name": "Src_OnHold",
+          "display": "Source On Hold",
+          "type": "Text",
+          "source": "HOLD",
+          "indexed": true,
+          "description": "e.g. NO HOLD, CA HOLD. Replaces the separate hold workbook."
+        },
+        {
+          "name": "Src_OverallStatusId",
+          "display": "Source Overall Status ID",
+          "type": "Number",
+          "source": "OV_STATUS_ID2",
+          "decimals": 0,
+          "indexed": true
+        },
+        {
+          "name": "Src_OverallStatus",
+          "display": "Source Overall Status",
+          "type": "Text",
+          "source": "OVERALL_STATUS"
+        },
+        {
+          "name": "Src_OverallStatusSimple",
+          "display": "Source Overall Status (Simple)",
+          "type": "Text",
+          "source": "OVERALL_STATUS (Simple)",
+          "indexed": true,
+          "inDefaultView": true
+        },
+        {
+          "name": "Src_OverallStatusSuperSimple",
+          "display": "Source Overall Status (Super Simple)",
+          "type": "Text",
+          "source": "OVERALL_STATUS (Super Simple)",
+          "indexed": true
+        },
+        {
+          "name": "Src_StatusFlags",
+          "display": "Source Status Flags",
+          "type": "Text",
+          "source": "1000..5300",
+          "description": "Comma-separated list of the numbered status columns (1000-5300) set to 1, e.g. 1300,3200,3500,3700."
+        },
+        {
+          "name": "Src_LastModified",
+          "display": "Source Last Modified",
+          "type": "DateTime",
+          "source": "check mod date",
+          "format": "DateOnly",
+          "inDefaultView": true,
+          "description": "Header/value alignment to be confirmed with Joseph."
+        },
+        {
+          "name": "Src_PrevModCheck",
+          "display": "Source Old Mod Check",
+          "type": "DateTime",
+          "source": "OLD MOD CHK",
+          "format": "DateOnly",
+          "description": "Header/value alignment to be confirmed with Joseph."
+        },
+        {
+          "name": "Src_ActivityStatus",
+          "display": "Source Activity Status",
+          "type": "Text",
+          "source": "ACTIVTY STATUS",
+          "indexed": true,
+          "description": "e.g. ACTIVE, INACTIVE 2-7 YRS. Header is misspelled in the source."
+        },
+        {
+          "name": "Src_BusinessGroupOverride",
+          "display": "Source BG (Override)",
+          "type": "Text",
+          "source": "BG (override)"
+        },
+        {
+          "name": "Src_ConfirmedBusinessGroup",
+          "display": "Source Confirmed Business Group",
+          "type": "Text",
+          "source": "BG (final)",
+          "indexed": true,
+          "description": "From BG (final). Used with the BusinessGroupFilter setting."
+        },
+        {
+          "name": "Src_SubArea",
+          "display": "Source Sub Area",
+          "type": "Text",
+          "source": "SUB AREA"
+        },
+        {
+          "name": "InfoSteward1",
+          "display": "Info Steward 1",
+          "type": "User",
+          "inDefaultView": true,
+          "description": "Confirmed steward of record (department value)."
+        },
+        {
+          "name": "InfoSteward2",
+          "display": "Info Steward 2",
+          "type": "User"
+        },
+        {
+          "name": "OwnershipStatus",
+          "display": "Ownership Status",
+          "type": "Choice",
+          "indexed": true,
+          "default": "Investigating",
+          "choices": [
+            "Confirmed",
+            "Other business group",
+            "Mixed",
+            "Orphan - no steward",
+            "Orphan - no owner",
+            "Orphan - both",
+            "Investigating"
+          ]
+        },
+        {
+          "name": "Decision",
+          "display": "Decision",
+          "type": "Choice",
+          "indexed": true,
+          "default": "Undecided",
+          "inDefaultView": true,
+          "choices": [
+            "Undecided",
+            "Keep",
+            "Delete",
+            "Hold - PII",
+            "Not my site"
+          ]
+        },
+        {
+          "name": "Stage",
+          "display": "Stage",
+          "type": "Choice",
+          "indexed": true,
+          "default": "Triage",
+          "inDefaultView": true,
+          "choices": [
+            "Triage",
+            "Ownership confirmation",
+            "Awaiting steward decision",
+            "Decision confirmed",
+            "Sent to enterprise",
+            "Confirmed in master",
+            "Re-review",
+            "Closed"
+          ]
+        },
+        {
+          "name": "PIIStatus",
+          "display": "PII Status",
+          "type": "Choice",
+          "default": "Unknown",
+          "choices": [
+            "Unknown",
+            "Attested no PII",
+            "Attested PII"
+          ]
+        },
+        {
+          "name": "ReReviewReason",
+          "display": "Re-review Reason",
+          "type": "Text"
+        },
+        {
+          "name": "AssignedTo",
+          "display": "Assigned To",
+          "type": "User"
+        },
+        {
+          "name": "Notes",
+          "display": "Notes",
+          "type": "Note",
+          "appendOnly": true
+        },
+        {
+          "name": "InSource",
+          "display": "In Source",
+          "type": "Boolean",
+          "default": "1",
+          "indexed": true
+        },
+        {
+          "name": "LastSeenInImport",
+          "display": "Last Seen In Import",
+          "type": "DateTime",
+          "format": "DateTime"
+        },
+        {
+          "name": "SrcHash",
+          "display": "Source Hash",
+          "type": "Text",
+          "description": "Concatenated Src_ values used to detect changes between imports."
+        },
+        {
+          "name": "DriftFlag",
+          "display": "Drift Flag",
+          "type": "Boolean",
+          "default": "0",
+          "indexed": true
+        },
+        {
+          "name": "DriftReason",
+          "display": "Drift Reason",
+          "type": "Note"
+        },
+        {
+          "name": "OpenUpdateCount",
+          "display": "Open Update Requests",
+          "type": "Number",
+          "decimals": 0,
+          "default": "0"
+        },
+        {
+          "name": "LastContacted",
+          "display": "Last Contacted",
+          "type": "DateTime",
+          "format": "DateTime"
+        },
+        {
+          "name": "ResponseCount",
+          "display": "Response Count",
+          "type": "Number",
+          "decimals": 0,
+          "default": "0"
+        },
+        {
+          "name": "HierarchyActualSizeMB",
+          "display": "Hierarchy Actual Size (MB)",
+          "type": "Number",
+          "decimals": 2,
+          "description": "System: on the top-level row, the sum of Source Actual Size (MB) for every site with the same Multi-Level Root (site plus all subsites). Calculated by the import flow."
+        }
+      ],
+      "views": [
+        {
+          "title": "By stage",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_SiteTitle",
+            "Src_MigrationAction",
+            "Src_OverallStatusSimple",
+            "Decision",
+            "InfoSteward1"
+          ],
+          "query": "<GroupBy Collapse='TRUE' GroupLimit='100'><FieldRef Name='Stage'/></GroupBy><OrderBy><FieldRef Name='Title'/></OrderBy>"
+        },
+        {
+          "title": "Awaiting steward",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "InfoSteward1",
+            "InfoSteward2",
+            "LastContacted",
+            "ResponseCount"
+          ],
+          "query": "<Where><Eq><FieldRef Name='Stage'/><Value Type='Choice'>Awaiting steward decision</Value></Eq></Where><OrderBy><FieldRef Name='LastContacted'/></OrderBy>"
+        },
+        {
+          "title": "Delete requested",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "InfoSteward1",
+            "InfoSteward2",
+            "Src_MigrationAction",
+            "Src_AgilePlaceLink",
+            "Src_OverallStatusSimple",
+            "Modified"
+          ],
+          "query": "<Where><And><Eq><FieldRef Name='Stage'/><Value Type='Choice'>Sent to enterprise</Value></Eq><Eq><FieldRef Name='Decision'/><Value Type='Choice'>Delete</Value></Eq></And></Where>"
+        },
+        {
+          "title": "Drift",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "DriftReason",
+            "OpenUpdateCount",
+            "Modified"
+          ],
+          "query": "<Where><Eq><FieldRef Name='DriftFlag'/><Value Type='Boolean'>1</Value></Eq></Where>"
+        },
+        {
+          "title": "Missing from source",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "LastSeenInImport",
+            "Stage",
+            "Decision"
+          ],
+          "query": "<Where><Eq><FieldRef Name='InSource'/><Value Type='Boolean'>0</Value></Eq></Where>"
+        },
+        {
+          "title": "Orphans",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "OwnershipStatus",
+            "Src_InfoSteward1",
+            "Src_SiteSteward",
+            "Src_TopLevelURL"
+          ],
+          "query": "<Where><BeginsWith><FieldRef Name='OwnershipStatus'/><Value Type='Choice'>Orphan</Value></BeginsWith></Where>"
+        },
+        {
+          "title": "PII holds",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "PIIStatus",
+            "Src_OnHold",
+            "InfoSteward1"
+          ],
+          "query": "<Where><Eq><FieldRef Name='Decision'/><Value Type='Choice'>Hold - PII</Value></Eq></Where>"
+        },
+        {
+          "title": "Enterprise holds",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_OnHold",
+            "Src_MigrationAction",
+            "Src_InfoSteward1",
+            "Decision"
+          ],
+          "query": "<Where><And><IsNotNull><FieldRef Name='Src_OnHold'/></IsNotNull><Neq><FieldRef Name='Src_OnHold'/><Value Type='Text'>NO HOLD</Value></Neq></And></Where>"
+        },
+        {
+          "title": "Blocked in source",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_OverallStatus",
+            "Src_ActivityStatus",
+            "Src_InfoSteward1",
+            "Stage"
+          ],
+          "query": "<Where><Eq><FieldRef Name='Src_OverallStatusSuperSimple'/><Value Type='Text'>Blocked</Value></Eq></Where>"
+        },
+        {
+          "title": "Largest hierarchies",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_SiteTitle",
+            "HierarchyActualSizeMB",
+            "Src_ActualSizeMB",
+            "Src_MigrationAction",
+            "Decision"
+          ],
+          "query": "<Where><Gt><FieldRef Name='HierarchyActualSizeMB'/><Value Type='Number'>0</Value></Gt></Where><OrderBy><FieldRef Name='HierarchyActualSizeMB' Ascending='FALSE'/></OrderBy>"
+        }
+      ],
+      "sourceNotes": "Not imported: EET EFFORT (HRS), EET EFFORT (DAYS). The 45 numbered status columns (1000-5300) are compressed into Src_StatusFlags. SIZE and ACTUAL SIZE are in MB and exclude subsites; HierarchyActualSizeMB sums them per Multi-Level Root."
+    },
+    {
+      "name": "UpdateQueue",
+      "title": "Update Queue",
+      "description": "Every change requested from the enterprise (Emma's) team, tracked until the source workbook matches.",
+      "onQuickLaunch": true,
+      "titleDisplayName": "Request ID",
+      "fields": [
+        {
+          "name": "SiteRefNo",
+          "display": "Site Reference No",
+          "type": "Text",
+          "indexed": true,
+          "inDefaultView": true,
+          "description": "Reference No from Site Register (text, not lookup, so the list is portable across sites)."
+        },
+        {
+          "name": "SiteKey",
+          "display": "Site Key",
+          "type": "Text",
+          "maxLength": 255,
+          "inDefaultView": true
+        },
+        {
+          "name": "RequestType",
+          "display": "Request Type",
+          "type": "Choice",
+          "default": "Field update",
+          "inDefaultView": true,
+          "choices": [
+            "Field update",
+            "Keep",
+            "Delete",
+            "Hold - PII"
+          ]
+        },
+        {
+          "name": "FieldName",
+          "display": "Field",
+          "type": "Text",
+          "inDefaultView": true
+        },
+        {
+          "name": "SourceValue",
+          "display": "Current Source Value",
+          "type": "Note",
+          "inDefaultView": true
+        },
+        {
+          "name": "RequestedValue",
+          "display": "Requested Value",
+          "type": "Note",
+          "inDefaultView": true
+        },
+        {
+          "name": "Reason",
+          "display": "Reason",
+          "type": "Note"
+        },
+        {
+          "name": "Status",
+          "display": "Status",
+          "type": "Choice",
+          "indexed": true,
+          "default": "Open",
+          "inDefaultView": true,
+          "choices": [
+            "Open",
+            "Applied",
+            "Reverted",
+            "Withdrawn"
+          ]
+        },
+        {
+          "name": "FirstSent",
+          "display": "First Sent",
+          "type": "DateTime",
+          "format": "DateTime"
+        },
+        {
+          "name": "LastSent",
+          "display": "Last Sent",
+          "type": "DateTime",
+          "format": "DateTime"
+        },
+        {
+          "name": "TimesSent",
+          "display": "Times Sent",
+          "type": "Number",
+          "decimals": 0,
+          "default": "0"
+        },
+        {
+          "name": "AppliedDate",
+          "display": "Applied Date",
+          "type": "DateTime",
+          "format": "DateTime"
+        },
+        {
+          "name": "RaisedBy",
+          "display": "Raised By",
+          "type": "User"
+        }
+      ],
+      "views": [
+        {
+          "title": "Open requests",
+          "fields": [
+            "LinkTitle",
+            "SiteRefNo",
+            "SiteKey",
+            "RequestType",
+            "FieldName",
+            "RequestedValue",
+            "FirstSent",
+            "TimesSent"
+          ],
+          "query": "<Where><Eq><FieldRef Name='Status'/><Value Type='Choice'>Open</Value></Eq></Where><OrderBy><FieldRef Name='FirstSent'/></OrderBy>"
+        },
+        {
+          "title": "Reverted",
+          "fields": [
+            "LinkTitle",
+            "SiteRefNo",
+            "SiteKey",
+            "FieldName",
+            "RequestedValue",
+            "SourceValue",
+            "Modified"
+          ],
+          "query": "<Where><Eq><FieldRef Name='Status'/><Value Type='Choice'>Reverted</Value></Eq></Where>"
+        }
+      ]
+    },
+    {
+      "name": "OutreachBatches",
+      "title": "Outreach Batches",
+      "description": "Each steward outreach started by the team from the outreach app.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Batch ID",
+      "fields": [
+        {
+          "name": "MessageType",
+          "display": "Message Type",
+          "type": "Text",
+          "indexed": true,
+          "inDefaultView": true,
+          "description": "Key of a Message type row in the Configuration list."
+        },
+        {
+          "name": "SiteRefNos",
+          "display": "Site Reference Nos",
+          "type": "Note"
+        },
+        {
+          "name": "SiteCount",
+          "display": "Sites",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "StewardCount",
+          "display": "Stewards",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "SentBy",
+          "display": "Sent By",
+          "type": "User",
+          "inDefaultView": true
+        },
+        {
+          "name": "SentDate",
+          "display": "Sent Date",
+          "type": "DateTime",
+          "format": "DateTime",
+          "indexed": true,
+          "inDefaultView": true
+        },
+        {
+          "name": "BatchStatus",
+          "display": "Batch Status",
+          "type": "Choice",
+          "default": "Draft",
+          "inDefaultView": true,
+          "choices": [
+            "Draft",
+            "Sent",
+            "Partially responded",
+            "Complete",
+            "Cancelled"
+          ]
+        }
+      ],
+      "views": []
+    },
+    {
+      "name": "AuditLog",
+      "title": "Audit Log",
+      "description": "Every card or email sent, every steward response and every email to the enterprise team: who, what, when.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Event ID",
+      "fields": [
+        {
+          "name": "EventType",
+          "display": "Event Type",
+          "type": "Choice",
+          "indexed": true,
+          "inDefaultView": true,
+          "choices": [
+            "Card sent",
+            "Email sent",
+            "Response received",
+            "Evidence email sent",
+            "Batch email sent",
+            "Status change",
+            "Import run"
+          ]
+        },
+        {
+          "name": "SiteRefNo",
+          "display": "Site Reference No",
+          "type": "Text",
+          "indexed": true,
+          "inDefaultView": true
+        },
+        {
+          "name": "BatchId",
+          "display": "Batch ID",
+          "type": "Text",
+          "indexed": true
+        },
+        {
+          "name": "Actor",
+          "display": "Actor (email)",
+          "type": "Text",
+          "inDefaultView": true
+        },
+        {
+          "name": "ActorIsStewardOfRecord",
+          "display": "Actor Is Steward Of Record",
+          "type": "Boolean",
+          "default": "0"
+        },
+        {
+          "name": "Details",
+          "display": "Details",
+          "type": "Note",
+          "inDefaultView": true
+        },
+        {
+          "name": "EventDate",
+          "display": "Event Date",
+          "type": "DateTime",
+          "format": "DateTime",
+          "indexed": true,
+          "inDefaultView": true
+        }
+      ],
+      "views": [
+        {
+          "title": "Steward responses",
+          "fields": [
+            "LinkTitle",
+            "SiteRefNo",
+            "Actor",
+            "ActorIsStewardOfRecord",
+            "Details",
+            "EventDate"
+          ],
+          "query": "<Where><Eq><FieldRef Name='EventType'/><Value Type='Choice'>Response received</Value></Eq></Where><OrderBy><FieldRef Name='EventDate' Ascending='FALSE'/></OrderBy>"
+        }
+      ]
+    },
+    {
+      "name": "ImportLog",
+      "title": "Import Log",
+      "description": "One row per daily import run.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Run ID",
+      "fields": [
+        {
+          "name": "RunStart",
+          "display": "Run Start",
+          "type": "DateTime",
+          "format": "DateTime",
+          "indexed": true,
+          "inDefaultView": true
+        },
+        {
+          "name": "RunEnd",
+          "display": "Run End",
+          "type": "DateTime",
+          "format": "DateTime",
+          "inDefaultView": true
+        },
+        {
+          "name": "RowsRead",
+          "display": "Rows Read",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "RowsAdded",
+          "display": "Added",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "RowsUpdated",
+          "display": "Updated",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "RowsMissing",
+          "display": "Missing From Source",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "DriftRaised",
+          "display": "Drift Raised",
+          "type": "Number",
+          "decimals": 0,
+          "inDefaultView": true
+        },
+        {
+          "name": "RunStatus",
+          "display": "Run Status",
+          "type": "Choice",
+          "indexed": true,
+          "inDefaultView": true,
+          "choices": [
+            "Succeeded",
+            "Partial",
+            "Failed"
+          ]
+        },
+        {
+          "name": "ErrorDetail",
+          "display": "Error Detail",
+          "type": "Note"
+        }
+      ],
+      "views": []
+    },
+    {
+      "name": "Configuration",
+      "title": "Configuration",
+      "description": "Business settings the team can change without redeploying: intervals, recipients, message types, links.",
+      "onQuickLaunch": false,
+      "titleDisplayName": "Key",
+      "fields": [
+        {
+          "name": "ConfigValue",
+          "display": "Value",
+          "type": "Note",
+          "inDefaultView": true
+        },
+        {
+          "name": "Category",
+          "display": "Category",
+          "type": "Choice",
+          "indexed": true,
+          "default": "General",
+          "inDefaultView": true,
+          "choices": [
+            "General",
+            "Email",
+            "Message type",
+            "Links"
+          ]
+        },
+        {
+          "name": "ConfigDescription",
+          "display": "Description",
+          "type": "Note",
+          "inDefaultView": true
+        },
+        {
+          "name": "IsActive",
+          "display": "Active",
+          "type": "Boolean",
+          "default": "1",
+          "inDefaultView": true
+        }
+      ],
+      "views": []
+    }
+  ],
+  "configSeed": [
+    {
+      "key": "DeptCode",
+      "value": "{DeptCode}",
+      "category": "General",
+      "description": "Prefix for reference numbers, e.g. CA-000001."
+    },
+    {
+      "key": "BusinessGroupFilter",
+      "value": "{BusinessGroup}",
+      "category": "General",
+      "description": "Business group value used to select rows from the source workbook."
+    },
+    {
+      "key": "RefNoPadding",
+      "value": "6",
+      "category": "General",
+      "description": "Digits in the reference number."
+    },
+    {
+      "key": "EnterpriseBatchIntervalDays",
+      "value": "1",
+      "category": "Email",
+      "description": "How often open update requests are emailed to the enterprise team (1, 3 or 5)."
+    },
+    {
+      "key": "EnterpriseTeamEmail",
+      "value": "{EnterpriseTeamEmail}",
+      "category": "Email",
+      "description": "Recipient(s) for update batches and delete evidence emails."
+    },
+    {
+      "key": "SharedMailbox",
+      "value": "{SharedMailbox}",
+      "category": "Email",
+      "description": "Mailbox all emails are sent from."
+    },
+    {
+      "key": "SupportTeamEmail",
+      "value": "{SupportTeamEmail}",
+      "category": "Email",
+      "description": "Team address copied on evidence emails."
+    },
+    {
+      "key": "MaxSitesPerCard",
+      "value": "15",
+      "category": "General",
+      "description": "Maximum sites listed on one steward adaptive card."
+    },
+    {
+      "key": "MSG_KeepOrDelete",
+      "value": "Please confirm whether each site below should be kept (queued for migration) or deleted.",
+      "category": "Message type",
+      "description": "Standard keep/delete decision request."
+    },
+    {
+      "key": "MSG_Orphan",
+      "value": "Our records show these sites have no confirmed information steward. Please confirm whether you are the steward, or tell us who is.",
+      "category": "Message type",
+      "description": "Orphan site ownership request."
+    },
+    {
+      "key": "MSG_ReReviewDeletion",
+      "value": "These sites were marked for deletion but show recent activity. Please confirm whether they should still be deleted.",
+      "category": "Message type",
+      "description": "Re-review of a deletion after activity was detected."
+    },
+    {
+      "key": "MSG_WrongBusinessGroup",
+      "value": "These sites are recorded under a business group that may be incorrect. Please confirm who owns them.",
+      "category": "Message type",
+      "description": "Business group mismatch."
+    }
+  ]
+}

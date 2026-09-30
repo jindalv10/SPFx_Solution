@@ -1,0 +1,2039 @@
+{
+  "schemaVersion": "2.3.0",
+  "solution": "Site Migration Tracker",
+  "howToUse": "Read by the 'Provision Site Migration Tracker' flow. Every request body is pre-built; the flow only loops and sends. Regenerate this file from the schema after any design change.",
+  "lists": [
+    {
+      "name": "SiteRegister",
+      "title": "Site Register",
+      "listCreateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "BaseTemplate": 100,
+        "Title": "SiteRegister",
+        "Description": "One row per site. Src_ columns are written only by the daily import; all other columns are owned by the department team or system flows."
+      },
+      "listUpdateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "Title": "Site Register",
+        "Description": "One row per site. Src_ columns are written only by the daily import; all other columns are owned by the department team or system flows.",
+        "EnableVersioning": true,
+        "OnQuickLaunch": true
+      },
+      "titleFieldBody": {
+        "__metadata": {
+          "type": "SP.Field"
+        },
+        "Title": "Reference No"
+      },
+      "listItemType": "SP.Data.SiteRegisterListItem",
+      "fields": [
+        {
+          "name": "SiteKey",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{56636410-763d-5654-8eec-2da3dce76cd7}' Name='SiteKey' StaticName='SiteKey' DisplayName='Site Key' Required='TRUE' Description='Normalized URL path from /sites/ onwards: decoded and lowercase. Match key to the source workbook.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": true
+        },
+        {
+          "name": "Src_SiteURL",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{d8e25b6e-a08f-5456-a0bf-aab96bc5c034}' Name='Src_SiteURL' StaticName='Src_SiteURL' DisplayName='Source Site URL' Required='FALSE' Description='Full URL as in the source workbook.' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_SiteTitle",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{a290025d-8ecc-5fcd-889a-d7c08ebd1386}' Name='Src_SiteTitle' StaticName='Src_SiteTitle' DisplayName='Source Site Name' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_TopLevelURL",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{c9b2424a-28c3-585c-8180-f559d9e8a158}' Name='Src_TopLevelURL' StaticName='Src_TopLevelURL' DisplayName='Source Multi-Level Root' Required='FALSE' Description='Top-level site of the hierarchy.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_MLROPercent",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{124e4e8c-b5ce-5716-8528-1df460285394}' Name='Src_MLROPercent' StaticName='Src_MLROPercent' DisplayName='Source MLRO %' Required='FALSE' Description='Stored as a number, e.g. 100.00% -&gt; 100.' Decimals='2'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_SizeMB",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{183cfc4d-8e85-5210-9bcd-da700953c0b1}' Name='Src_SizeMB' StaticName='Src_SizeMB' DisplayName='Source Size (MB)' Required='FALSE' Description='This site only - excludes subsites. Megabytes.' Decimals='2'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_ActualSizeMB",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{0fecba82-ebef-5285-8af0-481a459ddc30}' Name='Src_ActualSizeMB' StaticName='Src_ActualSizeMB' DisplayName='Source Actual Size (MB)' Required='FALSE' Description='This site only - excludes subsites. Megabytes.' Decimals='2'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_SiteSteward",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{cb743bb8-b4b0-5455-9f7f-caa1469acf4e}' Name='Src_SiteSteward' StaticName='Src_SiteSteward' DisplayName='Source Site Steward (Record Stewards)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_InfoSteward1",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{753bc797-6b39-5111-a3bb-32d572eda84d}' Name='Src_InfoSteward1' StaticName='Src_InfoSteward1' DisplayName='Source Info Steward (Primary)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_InfoSteward2",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{3b250f67-8160-5175-b1a8-ac2828188341}' Name='Src_InfoSteward2' StaticName='Src_InfoSteward2' DisplayName='Source Info Steward (Secondary)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_MigrationAction",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{59b9d444-8120-5990-aab5-ce2a6ecfe6b2}' Name='Src_MigrationAction' StaticName='Src_MigrationAction' DisplayName='Source Migration Action' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_DeleteEmailSentDate",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{7e5201cb-a22a-5ea5-bc62-f3a674e64f57}' Name='Src_DeleteEmailSentDate' StaticName='Src_DeleteEmailSentDate' DisplayName='Source Delete Email Sent Date' Required='FALSE' Description='' Format='DateOnly' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_DeleteConfirm",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{d46aa1ef-c496-5d60-bc49-965afdab0a24}' Name='Src_DeleteConfirm' StaticName='Src_DeleteConfirm' DisplayName='Source Delete Confirm' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_DeletedBy",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{1ec55e94-0f33-577a-b930-faad9535c341}' Name='Src_DeletedBy' StaticName='Src_DeletedBy' DisplayName='Source Deleted By' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_DeletionDate",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{e036d401-a786-53d1-b135-d4dadb73c11f}' Name='Src_DeletionDate' StaticName='Src_DeletionDate' DisplayName='Source Deletion Date' Required='FALSE' Description='' Format='DateOnly' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_APIngestionCompleted",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{d674ab11-9155-5e87-97e4-fb8587ed326f}' Name='Src_APIngestionCompleted' StaticName='Src_APIngestionCompleted' DisplayName='Source AvePoint Ingestion Completed' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_InAvePoint",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{6a1c6fff-092f-5cdd-b84e-45686a91cd7e}' Name='Src_InAvePoint' StaticName='Src_InAvePoint' DisplayName='Source In AvePoint' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_APTargetURL",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{0a21c513-5c9c-5464-9d8b-bbd571d71543}' Name='Src_APTargetURL' StaticName='Src_APTargetURL' DisplayName='Source AvePoint Target URL' Required='FALSE' Description='AvePoint target (URL or value such as Archive). Multi-line text so long URLs fit.' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_AgilePlaceLink",
+          "type": "URL",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='URL' ID='{326a5c16-b2d6-54be-9921-9ce7b1553b3c}' Name='Src_AgilePlaceLink' StaticName='Src_AgilePlaceLink' DisplayName='Source AgilePlace Link' Required='FALSE' Description='Emma&apos;s card for this site. A new link is evidence she has queued our request.' Format='Hyperlink' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_MigrationCompletionDate",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{4f456618-ea41-5994-b9cb-69dfcec05942}' Name='Src_MigrationCompletionDate' StaticName='Src_MigrationCompletionDate' DisplayName='Source Migration Completion Date' Required='FALSE' Description='' Format='DateOnly' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_OnHold",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{9305f0d0-4479-5e70-a6a6-3f62dbe024a4}' Name='Src_OnHold' StaticName='Src_OnHold' DisplayName='Source On Hold' Required='FALSE' Description='e.g. NO HOLD, CA HOLD. Replaces the separate hold workbook.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_OverallStatusId",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{27255342-6f7c-50e1-8bf4-ba2f340b9317}' Name='Src_OverallStatusId' StaticName='Src_OverallStatusId' DisplayName='Source Overall Status ID' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_OverallStatus",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{3c2245ef-b055-56fc-b959-c239f43c9dfe}' Name='Src_OverallStatus' StaticName='Src_OverallStatus' DisplayName='Source Overall Status' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_OverallStatusSimple",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{ae672c27-0cc7-5edf-b604-c49aecbf1a63}' Name='Src_OverallStatusSimple' StaticName='Src_OverallStatusSimple' DisplayName='Source Overall Status (Simple)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_OverallStatusSuperSimple",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{ebdc29af-e215-5288-9926-3d06533a93db}' Name='Src_OverallStatusSuperSimple' StaticName='Src_OverallStatusSuperSimple' DisplayName='Source Overall Status (Super Simple)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_StatusFlags",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{82640821-bea7-5dc1-a15a-90963cb5bad8}' Name='Src_StatusFlags' StaticName='Src_StatusFlags' DisplayName='Source Status Flags' Required='FALSE' Description='Comma-separated list of the numbered status columns (1000-5300) set to 1, e.g. 1300,3200,3500,3700.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_LastModified",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{b6a7dd40-489d-53bc-9749-f9ff77229981}' Name='Src_LastModified' StaticName='Src_LastModified' DisplayName='Source Last Modified' Required='FALSE' Description='Header/value alignment to be confirmed with Joseph.' Format='DateOnly' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_PrevModCheck",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{148d0a0e-7140-5f2b-b6e2-e42c6846ce2d}' Name='Src_PrevModCheck' StaticName='Src_PrevModCheck' DisplayName='Source Old Mod Check' Required='FALSE' Description='Header/value alignment to be confirmed with Joseph.' Format='DateOnly' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_ActivityStatus",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{8707f349-552c-5d33-b840-fd44df54dc20}' Name='Src_ActivityStatus' StaticName='Src_ActivityStatus' DisplayName='Source Activity Status' Required='FALSE' Description='e.g. ACTIVE, INACTIVE 2-7 YRS. Header is misspelled in the source.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_BusinessGroupOverride",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{dd923bbc-44d0-59c0-b2b3-59fbb5930a6c}' Name='Src_BusinessGroupOverride' StaticName='Src_BusinessGroupOverride' DisplayName='Source BG (Override)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Src_ConfirmedBusinessGroup",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{1d5fe0c7-118a-5130-b776-a88da3e98d96}' Name='Src_ConfirmedBusinessGroup' StaticName='Src_ConfirmedBusinessGroup' DisplayName='Source Confirmed Business Group' Required='FALSE' Description='From BG (final). Used with the BusinessGroupFilter setting.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Src_SubArea",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{22509fbe-7608-592e-8e89-e2d10aaa4868}' Name='Src_SubArea' StaticName='Src_SubArea' DisplayName='Source Sub Area' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "InfoSteward1",
+          "type": "User",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='User' ID='{9d5409cb-e56c-525e-8cf8-6c5d0a1ababe}' Name='InfoSteward1' StaticName='InfoSteward1' DisplayName='Info Steward 1' Required='FALSE' Description='Confirmed steward of record (department value).' UserSelectionMode='PeopleOnly' Mult='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "InfoSteward2",
+          "type": "User",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='User' ID='{5136bcb5-867b-580b-a5b9-f815127a2305}' Name='InfoSteward2' StaticName='InfoSteward2' DisplayName='Info Steward 2' Required='FALSE' Description='' UserSelectionMode='PeopleOnly' Mult='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "OwnershipStatus",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{10bbac2f-6979-5f2b-8652-3886fcfcebc8}' Name='OwnershipStatus' StaticName='OwnershipStatus' DisplayName='Ownership Status' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Confirmed</CHOICE><CHOICE>Other business group</CHOICE><CHOICE>Mixed</CHOICE><CHOICE>Orphan - no steward</CHOICE><CHOICE>Orphan - no owner</CHOICE><CHOICE>Orphan - both</CHOICE><CHOICE>Investigating</CHOICE></CHOICES><Default>Investigating</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Decision",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{d5c6510f-39c4-589a-b397-747ccdcb4780}' Name='Decision' StaticName='Decision' DisplayName='Decision' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Undecided</CHOICE><CHOICE>Keep</CHOICE><CHOICE>Delete</CHOICE><CHOICE>Hold - PII</CHOICE><CHOICE>Not my site</CHOICE></CHOICES><Default>Undecided</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Stage",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{11fc87b9-c577-531c-9aaf-2db7f2801098}' Name='Stage' StaticName='Stage' DisplayName='Stage' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Triage</CHOICE><CHOICE>Ownership confirmation</CHOICE><CHOICE>Awaiting steward decision</CHOICE><CHOICE>Decision confirmed</CHOICE><CHOICE>Sent to enterprise</CHOICE><CHOICE>Confirmed in master</CHOICE><CHOICE>Re-review</CHOICE><CHOICE>Closed</CHOICE></CHOICES><Default>Triage</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "PIIStatus",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{5b5f6aab-ee00-5aef-85fb-bc4d3ce45c4a}' Name='PIIStatus' StaticName='PIIStatus' DisplayName='PII Status' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Unknown</CHOICE><CHOICE>Attested no PII</CHOICE><CHOICE>Attested PII</CHOICE></CHOICES><Default>Unknown</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "ReReviewReason",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{5d3ca35b-9851-5b31-bfbf-5ab7b660178b}' Name='ReReviewReason' StaticName='ReReviewReason' DisplayName='Re-review Reason' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "AssignedTo",
+          "type": "User",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='User' ID='{47383194-0f39-57c0-90dc-42f97751eca2}' Name='AssignedTo' StaticName='AssignedTo' DisplayName='Assigned To' Required='FALSE' Description='' UserSelectionMode='PeopleOnly' Mult='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Notes",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{31d5258c-abd8-5f28-851c-7fe5df7728b1}' Name='Notes' StaticName='Notes' DisplayName='Notes' Required='FALSE' Description='' NumLines='6' RichText='FALSE' AppendOnly='TRUE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "InSource",
+          "type": "Boolean",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Boolean' ID='{2ac1eb99-5f7e-538b-abf1-2017bd485a90}' Name='InSource' StaticName='InSource' DisplayName='In Source' Required='FALSE' Description=''><Default>1</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "LastSeenInImport",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{3deaa2ca-a2b9-54f5-8035-18af61c746f0}' Name='LastSeenInImport' StaticName='LastSeenInImport' DisplayName='Last Seen In Import' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "SrcHash",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{d517c64a-8f14-530b-a324-cb9b7c45128a}' Name='SrcHash' StaticName='SrcHash' DisplayName='Source Hash' Required='FALSE' Description='Concatenated Src_ values used to detect changes between imports.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "DriftFlag",
+          "type": "Boolean",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Boolean' ID='{422e2b9f-60d9-59c4-8545-610ab9e789f4}' Name='DriftFlag' StaticName='DriftFlag' DisplayName='Drift Flag' Required='FALSE' Description=''><Default>0</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "DriftReason",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{e202aefa-edd0-54aa-ac64-680bc56d3fbf}' Name='DriftReason' StaticName='DriftReason' DisplayName='Drift Reason' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "OpenUpdateCount",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{8c1b288c-2762-5170-a7f6-9a068fadefc5}' Name='OpenUpdateCount' StaticName='OpenUpdateCount' DisplayName='Open Update Requests' Required='FALSE' Description='' Decimals='0'><Default>0</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "LastContacted",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{6265aa1d-8f87-5f8e-8a96-d8017c1c963c}' Name='LastContacted' StaticName='LastContacted' DisplayName='Last Contacted' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "ResponseCount",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{4ad4f0f2-9d7f-570a-b8d4-31ece49244a3}' Name='ResponseCount' StaticName='ResponseCount' DisplayName='Response Count' Required='FALSE' Description='' Decimals='0'><Default>0</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "HierarchyActualSizeMB",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{02d4b324-6266-5c5d-b73b-3dd5a60fef6d}' Name='HierarchyActualSizeMB' StaticName='HierarchyActualSizeMB' DisplayName='Hierarchy Actual Size (MB)' Required='FALSE' Description='System: on the top-level row, the sum of Source Actual Size (MB) for every site with the same Multi-Level Root (site plus all subsites). Calculated by the import flow.' Decimals='2'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        }
+      ],
+      "defaultViewFields": [
+        "LinkTitle",
+        "SiteKey",
+        "Src_SiteURL",
+        "Src_SiteTitle",
+        "Src_SizeMB",
+        "Src_MigrationAction",
+        "Src_OverallStatusSimple",
+        "Src_LastModified",
+        "InfoSteward1",
+        "Decision",
+        "Stage"
+      ],
+      "views": [
+        {
+          "title": "By stage",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_SiteTitle",
+            "Src_MigrationAction",
+            "Src_OverallStatusSimple",
+            "Decision",
+            "InfoSteward1"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "By stage",
+            "PersonalView": false,
+            "ViewQuery": "<GroupBy Collapse='TRUE' GroupLimit='100'><FieldRef Name='Stage'/></GroupBy><OrderBy><FieldRef Name='Title'/></OrderBy>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Awaiting steward",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "InfoSteward1",
+            "InfoSteward2",
+            "LastContacted",
+            "ResponseCount"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Awaiting steward",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='Stage'/><Value Type='Choice'>Awaiting steward decision</Value></Eq></Where><OrderBy><FieldRef Name='LastContacted'/></OrderBy>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Delete requested",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "InfoSteward1",
+            "InfoSteward2",
+            "Src_MigrationAction",
+            "Src_AgilePlaceLink",
+            "Src_OverallStatusSimple",
+            "Modified"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Delete requested",
+            "PersonalView": false,
+            "ViewQuery": "<Where><And><Eq><FieldRef Name='Stage'/><Value Type='Choice'>Sent to enterprise</Value></Eq><Eq><FieldRef Name='Decision'/><Value Type='Choice'>Delete</Value></Eq></And></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Drift",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "DriftReason",
+            "OpenUpdateCount",
+            "Modified"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Drift",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='DriftFlag'/><Value Type='Boolean'>1</Value></Eq></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Missing from source",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "LastSeenInImport",
+            "Stage",
+            "Decision"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Missing from source",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='InSource'/><Value Type='Boolean'>0</Value></Eq></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Orphans",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "OwnershipStatus",
+            "Src_InfoSteward1",
+            "Src_SiteSteward",
+            "Src_TopLevelURL"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Orphans",
+            "PersonalView": false,
+            "ViewQuery": "<Where><BeginsWith><FieldRef Name='OwnershipStatus'/><Value Type='Choice'>Orphan</Value></BeginsWith></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "PII holds",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "PIIStatus",
+            "Src_OnHold",
+            "InfoSteward1"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "PII holds",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='Decision'/><Value Type='Choice'>Hold - PII</Value></Eq></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Enterprise holds",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_OnHold",
+            "Src_MigrationAction",
+            "Src_InfoSteward1",
+            "Decision"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Enterprise holds",
+            "PersonalView": false,
+            "ViewQuery": "<Where><And><IsNotNull><FieldRef Name='Src_OnHold'/></IsNotNull><Neq><FieldRef Name='Src_OnHold'/><Value Type='Text'>NO HOLD</Value></Neq></And></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Blocked in source",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_OverallStatus",
+            "Src_ActivityStatus",
+            "Src_InfoSteward1",
+            "Stage"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Blocked in source",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='Src_OverallStatusSuperSimple'/><Value Type='Text'>Blocked</Value></Eq></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Largest hierarchies",
+          "fields": [
+            "LinkTitle",
+            "SiteKey",
+            "Src_SiteTitle",
+            "HierarchyActualSizeMB",
+            "Src_ActualSizeMB",
+            "Src_MigrationAction",
+            "Decision"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Largest hierarchies",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Gt><FieldRef Name='HierarchyActualSizeMB'/><Value Type='Number'>0</Value></Gt></Where><OrderBy><FieldRef Name='HierarchyActualSizeMB' Ascending='FALSE'/></OrderBy>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "UpdateQueue",
+      "title": "Update Queue",
+      "listCreateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "BaseTemplate": 100,
+        "Title": "UpdateQueue",
+        "Description": "Every change requested from the enterprise (Emma's) team, tracked until the source workbook matches."
+      },
+      "listUpdateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "Title": "Update Queue",
+        "Description": "Every change requested from the enterprise (Emma's) team, tracked until the source workbook matches.",
+        "EnableVersioning": true,
+        "OnQuickLaunch": true
+      },
+      "titleFieldBody": {
+        "__metadata": {
+          "type": "SP.Field"
+        },
+        "Title": "Request ID"
+      },
+      "listItemType": "SP.Data.UpdateQueueListItem",
+      "fields": [
+        {
+          "name": "SiteRefNo",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{19be920a-6105-5435-9e7f-26d7a850c4e6}' Name='SiteRefNo' StaticName='SiteRefNo' DisplayName='Site Reference No' Required='FALSE' Description='Reference No from Site Register (text, not lookup, so the list is portable across sites).' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "SiteKey",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{b786f5bb-41fd-5152-8781-c75b86f389fd}' Name='SiteKey' StaticName='SiteKey' DisplayName='Site Key' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RequestType",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{bdefa62c-7124-58b5-b218-4cd1b172c7c1}' Name='RequestType' StaticName='RequestType' DisplayName='Request Type' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Field update</CHOICE><CHOICE>Keep</CHOICE><CHOICE>Delete</CHOICE><CHOICE>Hold - PII</CHOICE></CHOICES><Default>Field update</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "FieldName",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{e5f15b65-0780-5d95-af38-f4c91f30b3a1}' Name='FieldName' StaticName='FieldName' DisplayName='Field' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "SourceValue",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{21696918-a4b3-5736-81e2-2301d4d64e84}' Name='SourceValue' StaticName='SourceValue' DisplayName='Current Source Value' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RequestedValue",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{a0a533d5-8c4f-5d7d-b061-373abc8e1a23}' Name='RequestedValue' StaticName='RequestedValue' DisplayName='Requested Value' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Reason",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{ef1232a5-ce10-54b9-8166-be796477479e}' Name='Reason' StaticName='Reason' DisplayName='Reason' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Status",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{d3bf1c17-b8d6-57f2-8fa3-b859f9c0998b}' Name='Status' StaticName='Status' DisplayName='Status' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Open</CHOICE><CHOICE>Applied</CHOICE><CHOICE>Reverted</CHOICE><CHOICE>Withdrawn</CHOICE></CHOICES><Default>Open</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "FirstSent",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{15d5ce3c-dd4a-51b3-b6ab-3ea8e9f40e82}' Name='FirstSent' StaticName='FirstSent' DisplayName='First Sent' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "LastSent",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{51cf3be8-c886-5d90-87fb-9d3693ab7c32}' Name='LastSent' StaticName='LastSent' DisplayName='Last Sent' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "TimesSent",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{3ff7d2ee-e890-565f-86f2-434edb5965c5}' Name='TimesSent' StaticName='TimesSent' DisplayName='Times Sent' Required='FALSE' Description='' Decimals='0'><Default>0</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "AppliedDate",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{097139fc-af4c-58f6-ad78-9dde8fffae6b}' Name='AppliedDate' StaticName='AppliedDate' DisplayName='Applied Date' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RaisedBy",
+          "type": "User",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='User' ID='{3b2f3381-1280-5fed-8515-fe3a5e58f587}' Name='RaisedBy' StaticName='RaisedBy' DisplayName='Raised By' Required='FALSE' Description='' UserSelectionMode='PeopleOnly' Mult='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        }
+      ],
+      "defaultViewFields": [
+        "LinkTitle",
+        "SiteRefNo",
+        "SiteKey",
+        "RequestType",
+        "FieldName",
+        "SourceValue",
+        "RequestedValue",
+        "Status"
+      ],
+      "views": [
+        {
+          "title": "Open requests",
+          "fields": [
+            "LinkTitle",
+            "SiteRefNo",
+            "SiteKey",
+            "RequestType",
+            "FieldName",
+            "RequestedValue",
+            "FirstSent",
+            "TimesSent"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Open requests",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='Status'/><Value Type='Choice'>Open</Value></Eq></Where><OrderBy><FieldRef Name='FirstSent'/></OrderBy>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        },
+        {
+          "title": "Reverted",
+          "fields": [
+            "LinkTitle",
+            "SiteRefNo",
+            "SiteKey",
+            "FieldName",
+            "RequestedValue",
+            "SourceValue",
+            "Modified"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Reverted",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='Status'/><Value Type='Choice'>Reverted</Value></Eq></Where>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "OutreachBatches",
+      "title": "Outreach Batches",
+      "listCreateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "BaseTemplate": 100,
+        "Title": "OutreachBatches",
+        "Description": "Each steward outreach started by the team from the outreach app."
+      },
+      "listUpdateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "Title": "Outreach Batches",
+        "Description": "Each steward outreach started by the team from the outreach app.",
+        "EnableVersioning": true,
+        "OnQuickLaunch": false
+      },
+      "titleFieldBody": {
+        "__metadata": {
+          "type": "SP.Field"
+        },
+        "Title": "Batch ID"
+      },
+      "listItemType": "SP.Data.OutreachBatchesListItem",
+      "fields": [
+        {
+          "name": "MessageType",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{f89d5684-c1eb-5a0e-817d-4550a915c03f}' Name='MessageType' StaticName='MessageType' DisplayName='Message Type' Required='FALSE' Description='Key of a Message type row in the Configuration list.' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "SiteRefNos",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{94b94a83-a721-58d8-91ee-f416271cc300}' Name='SiteRefNos' StaticName='SiteRefNos' DisplayName='Site Reference Nos' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "SiteCount",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{b65e1bbb-e380-597c-b320-5c1480aa0649}' Name='SiteCount' StaticName='SiteCount' DisplayName='Sites' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "StewardCount",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{92c157c6-106e-5214-963b-1c8fdae34747}' Name='StewardCount' StaticName='StewardCount' DisplayName='Stewards' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "SentBy",
+          "type": "User",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='User' ID='{c1cf310b-d364-5410-b985-e538ec42cfb5}' Name='SentBy' StaticName='SentBy' DisplayName='Sent By' Required='FALSE' Description='' UserSelectionMode='PeopleOnly' Mult='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "SentDate",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{07ec545e-7b8a-5755-970d-c4baff68d852}' Name='SentDate' StaticName='SentDate' DisplayName='Sent Date' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "BatchStatus",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{5384f839-54f0-5c2a-ac80-c8d2ca378878}' Name='BatchStatus' StaticName='BatchStatus' DisplayName='Batch Status' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Draft</CHOICE><CHOICE>Sent</CHOICE><CHOICE>Partially responded</CHOICE><CHOICE>Complete</CHOICE><CHOICE>Cancelled</CHOICE></CHOICES><Default>Draft</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        }
+      ],
+      "defaultViewFields": [
+        "LinkTitle",
+        "MessageType",
+        "SiteCount",
+        "StewardCount",
+        "SentBy",
+        "SentDate",
+        "BatchStatus"
+      ],
+      "views": []
+    },
+    {
+      "name": "AuditLog",
+      "title": "Audit Log",
+      "listCreateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "BaseTemplate": 100,
+        "Title": "AuditLog",
+        "Description": "Every card or email sent, every steward response and every email to the enterprise team: who, what, when."
+      },
+      "listUpdateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "Title": "Audit Log",
+        "Description": "Every card or email sent, every steward response and every email to the enterprise team: who, what, when.",
+        "EnableVersioning": true,
+        "OnQuickLaunch": false
+      },
+      "titleFieldBody": {
+        "__metadata": {
+          "type": "SP.Field"
+        },
+        "Title": "Event ID"
+      },
+      "listItemType": "SP.Data.AuditLogListItem",
+      "fields": [
+        {
+          "name": "EventType",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{bde80f68-cef0-56fd-9a82-c68ff515a68f}' Name='EventType' StaticName='EventType' DisplayName='Event Type' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Card sent</CHOICE><CHOICE>Email sent</CHOICE><CHOICE>Response received</CHOICE><CHOICE>Evidence email sent</CHOICE><CHOICE>Batch email sent</CHOICE><CHOICE>Status change</CHOICE><CHOICE>Import run</CHOICE></CHOICES></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "SiteRefNo",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{c2de7dd7-fdab-59b3-a924-28f73d97526b}' Name='SiteRefNo' StaticName='SiteRefNo' DisplayName='Site Reference No' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "BatchId",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{396fd29a-3ee8-55a9-8dbb-a6bf65a67731}' Name='BatchId' StaticName='BatchId' DisplayName='Batch ID' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "Actor",
+          "type": "Text",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Text' ID='{5de3face-e4ad-5a82-8419-52ba5f849064}' Name='Actor' StaticName='Actor' DisplayName='Actor (email)' Required='FALSE' Description='' MaxLength='255'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "ActorIsStewardOfRecord",
+          "type": "Boolean",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Boolean' ID='{8ecb54ee-a4b5-54fe-9945-075c1b806958}' Name='ActorIsStewardOfRecord' StaticName='ActorIsStewardOfRecord' DisplayName='Actor Is Steward Of Record' Required='FALSE' Description=''><Default>0</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Details",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{3d856afc-ef0f-5060-b70d-768dc5c13d9d}' Name='Details' StaticName='Details' DisplayName='Details' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "EventDate",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{78efb21d-441d-5ef6-97e7-bcda7379a971}' Name='EventDate' StaticName='EventDate' DisplayName='Event Date' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        }
+      ],
+      "defaultViewFields": [
+        "LinkTitle",
+        "EventType",
+        "SiteRefNo",
+        "Actor",
+        "Details",
+        "EventDate"
+      ],
+      "views": [
+        {
+          "title": "Steward responses",
+          "fields": [
+            "LinkTitle",
+            "SiteRefNo",
+            "Actor",
+            "ActorIsStewardOfRecord",
+            "Details",
+            "EventDate"
+          ],
+          "createBody": {
+            "__metadata": {
+              "type": "SP.View"
+            },
+            "Title": "Steward responses",
+            "PersonalView": false,
+            "ViewQuery": "<Where><Eq><FieldRef Name='EventType'/><Value Type='Choice'>Response received</Value></Eq></Where><OrderBy><FieldRef Name='EventDate' Ascending='FALSE'/></OrderBy>",
+            "RowLimit": 100,
+            "Paged": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "ImportLog",
+      "title": "Import Log",
+      "listCreateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "BaseTemplate": 100,
+        "Title": "ImportLog",
+        "Description": "One row per daily import run."
+      },
+      "listUpdateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "Title": "Import Log",
+        "Description": "One row per daily import run.",
+        "EnableVersioning": true,
+        "OnQuickLaunch": false
+      },
+      "titleFieldBody": {
+        "__metadata": {
+          "type": "SP.Field"
+        },
+        "Title": "Run ID"
+      },
+      "listItemType": "SP.Data.ImportLogListItem",
+      "fields": [
+        {
+          "name": "RunStart",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{7739c208-9231-5887-9bb3-839f5abd7d83}' Name='RunStart' StaticName='RunStart' DisplayName='Run Start' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "RunEnd",
+          "type": "DateTime",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='DateTime' ID='{a51fd00d-d2c6-5380-bc2b-a292025ff479}' Name='RunEnd' StaticName='RunEnd' DisplayName='Run End' Required='FALSE' Description='' Format='DateTime' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RowsRead",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{79f4d13c-6147-5487-af09-857c3511751f}' Name='RowsRead' StaticName='RowsRead' DisplayName='Rows Read' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RowsAdded",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{7598ecf7-727e-518e-ac7f-27ea6100f9ed}' Name='RowsAdded' StaticName='RowsAdded' DisplayName='Added' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RowsUpdated",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{48744957-500d-5b57-92e8-16455aae3f3c}' Name='RowsUpdated' StaticName='RowsUpdated' DisplayName='Updated' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RowsMissing",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{456e3e68-3157-58a4-9d11-6f8cef811d25}' Name='RowsMissing' StaticName='RowsMissing' DisplayName='Missing From Source' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "DriftRaised",
+          "type": "Number",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Number' ID='{e049a427-7155-5954-9b4e-f7a009b5e203}' Name='DriftRaised' StaticName='DriftRaised' DisplayName='Drift Raised' Required='FALSE' Description='' Decimals='0'></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "RunStatus",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{223567fd-d627-59c6-8592-626fce61e311}' Name='RunStatus' StaticName='RunStatus' DisplayName='Run Status' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>Succeeded</CHOICE><CHOICE>Partial</CHOICE><CHOICE>Failed</CHOICE></CHOICES></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "ErrorDetail",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{9072a547-9c81-5545-8095-05e79d76303f}' Name='ErrorDetail' StaticName='ErrorDetail' DisplayName='Error Detail' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        }
+      ],
+      "defaultViewFields": [
+        "LinkTitle",
+        "RunStart",
+        "RunEnd",
+        "RowsRead",
+        "RowsAdded",
+        "RowsUpdated",
+        "RowsMissing",
+        "DriftRaised",
+        "RunStatus"
+      ],
+      "views": []
+    },
+    {
+      "name": "Configuration",
+      "title": "Configuration",
+      "listCreateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "BaseTemplate": 100,
+        "Title": "Configuration",
+        "Description": "Business settings the team can change without redeploying: intervals, recipients, message types, links."
+      },
+      "listUpdateBody": {
+        "__metadata": {
+          "type": "SP.List"
+        },
+        "Title": "Configuration",
+        "Description": "Business settings the team can change without redeploying: intervals, recipients, message types, links.",
+        "EnableVersioning": true,
+        "OnQuickLaunch": false
+      },
+      "titleFieldBody": {
+        "__metadata": {
+          "type": "SP.Field"
+        },
+        "Title": "Key"
+      },
+      "listItemType": "SP.Data.ConfigurationListItem",
+      "fields": [
+        {
+          "name": "ConfigValue",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{fc434858-443b-581e-9cc6-f48b97da18d4}' Name='ConfigValue' StaticName='ConfigValue' DisplayName='Value' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "Category",
+          "type": "Choice",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Choice' ID='{0ed8a1dd-0257-5b20-913a-85db173e10f0}' Name='Category' StaticName='Category' DisplayName='Category' Required='FALSE' Description='' Format='Dropdown' FillInChoice='FALSE'><CHOICES><CHOICE>General</CHOICE><CHOICE>Email</CHOICE><CHOICE>Message type</CHOICE><CHOICE>Links</CHOICE></CHOICES><Default>General</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": true,
+          "unique": false
+        },
+        {
+          "name": "ConfigDescription",
+          "type": "Note",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Note' ID='{74dd921e-f853-5410-a401-35f9bad0710c}' Name='ConfigDescription' StaticName='ConfigDescription' DisplayName='Description' Required='FALSE' Description='' NumLines='6' RichText='FALSE' />",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        },
+        {
+          "name": "IsActive",
+          "type": "Boolean",
+          "createBody": {
+            "parameters": {
+              "__metadata": {
+                "type": "SP.XmlSchemaFieldCreationInformation"
+              },
+              "SchemaXml": "<Field Type='Boolean' ID='{2ba2bdf0-c073-50c2-a555-583b7661ab25}' Name='IsActive' StaticName='IsActive' DisplayName='Active' Required='FALSE' Description=''><Default>1</Default></Field>",
+              "Options": 8
+            }
+          },
+          "indexed": false,
+          "unique": false
+        }
+      ],
+      "defaultViewFields": [
+        "LinkTitle",
+        "ConfigValue",
+        "Category",
+        "ConfigDescription",
+        "IsActive"
+      ],
+      "views": []
+    }
+  ],
+  "configSeed": [
+    {
+      "key": "DeptCode",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "DeptCode",
+        "ConfigValue": "{DeptCode}",
+        "Category": "General",
+        "ConfigDescription": "Prefix for reference numbers, e.g. CA-000001.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "BusinessGroupFilter",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "BusinessGroupFilter",
+        "ConfigValue": "{BusinessGroup}",
+        "Category": "General",
+        "ConfigDescription": "Business group value used to select rows from the source workbook.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "RefNoPadding",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "RefNoPadding",
+        "ConfigValue": "6",
+        "Category": "General",
+        "ConfigDescription": "Digits in the reference number.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "EnterpriseBatchIntervalDays",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "EnterpriseBatchIntervalDays",
+        "ConfigValue": "1",
+        "Category": "Email",
+        "ConfigDescription": "How often open update requests are emailed to the enterprise team (1, 3 or 5).",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "EnterpriseTeamEmail",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "EnterpriseTeamEmail",
+        "ConfigValue": "{EnterpriseTeamEmail}",
+        "Category": "Email",
+        "ConfigDescription": "Recipient(s) for update batches and delete evidence emails.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "SharedMailbox",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "SharedMailbox",
+        "ConfigValue": "{SharedMailbox}",
+        "Category": "Email",
+        "ConfigDescription": "Mailbox all emails are sent from.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "SupportTeamEmail",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "SupportTeamEmail",
+        "ConfigValue": "{SupportTeamEmail}",
+        "Category": "Email",
+        "ConfigDescription": "Team address copied on evidence emails.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "MaxSitesPerCard",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "MaxSitesPerCard",
+        "ConfigValue": "15",
+        "Category": "General",
+        "ConfigDescription": "Maximum sites listed on one steward adaptive card.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "MSG_KeepOrDelete",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "MSG_KeepOrDelete",
+        "ConfigValue": "Please confirm whether each site below should be kept (queued for migration) or deleted.",
+        "Category": "Message type",
+        "ConfigDescription": "Standard keep/delete decision request.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "MSG_Orphan",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "MSG_Orphan",
+        "ConfigValue": "Our records show these sites have no confirmed information steward. Please confirm whether you are the steward, or tell us who is.",
+        "Category": "Message type",
+        "ConfigDescription": "Orphan site ownership request.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "MSG_ReReviewDeletion",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "MSG_ReReviewDeletion",
+        "ConfigValue": "These sites were marked for deletion but show recent activity. Please confirm whether they should still be deleted.",
+        "Category": "Message type",
+        "ConfigDescription": "Re-review of a deletion after activity was detected.",
+        "IsActive": true
+      }
+    },
+    {
+      "key": "MSG_WrongBusinessGroup",
+      "itemBody": {
+        "__metadata": {
+          "type": "SP.Data.ConfigurationListItem"
+        },
+        "Title": "MSG_WrongBusinessGroup",
+        "ConfigValue": "These sites are recorded under a business group that may be incorrect. Please confirm who owns them.",
+        "Category": "Message type",
+        "ConfigDescription": "Business group mismatch.",
+        "IsActive": true
+      }
+    }
+  ]
+}
